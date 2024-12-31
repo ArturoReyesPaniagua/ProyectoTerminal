@@ -1,0 +1,62 @@
+/* Contenedor principal */
+.formulario-datos-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Caja del formulario */
+  .formulario-datos-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+  }
+  
+  /* Título del formulario */
+  .formulario-datos-box h2 {
+    margin-bottom: 20px;
+    color: #1f4f63;
+    font-size: 24px;
+  }
+  
+  /* Campos de entrada */
+  .formulario-datos-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    margin-bottom: 15px;
+  }
+  
+  .formulario-datos-input:focus {
+    border-color: #1f4f63;
+  }
+  
+  /* Botón de establecer datos */
+  .boton-establecer-datos {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: white;
+    background-color: #1f4f63;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .boton-establecer-datos:hover {
+    background-color: #ffa07a;
+  }
+  

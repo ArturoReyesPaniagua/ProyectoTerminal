@@ -1,0 +1,88 @@
+/* menuprincipal.css */
+
+/* Contenedor principal del menú */
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Logo en la parte superior */
+  .logo {
+    margin-bottom: 20px;
+  }
+  
+  .logo-image {
+    width: 150px;
+    height: auto;
+  }
+  
+  /* Caja del formulario o botones del menú */
+  .form-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+  }
+  
+  /* Botones del menú */
+  .menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .menu-button {
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: white;
+    background-color: #1f4f63;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .menu-button:hover {
+    background-color: #ffa07a;
+  }
+  
+  /* Contenedor del UserMenu */
+  .user-menu-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: 200px;
+    text-align: center;
+    z-index: 100;
+  }
+  
+  /* Botones del UserMenu */
+  .user-menu-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff0000;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    margin-bottom: 10px;
+  }
+  
+  .user-menu-button:hover {
+    background-color: #631f1f;
+  }
+  
