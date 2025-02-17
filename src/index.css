@@ -1,0 +1,75 @@
+/* Estilo global */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Enlaces */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Encabezados */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0.5rem 0;
+  font-weight: bold;
+  color: #0056b3; /* Color primario */
+}
+
+/* Botones */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Contenedor principal */
+.contenedor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Clases auxiliares */
+.texto-centrado {
+  text-align: center;
+}
+
+.texto-blanco {
+  color: #fff;
+}
+
+/* Animación de transición */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in-out;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}
