@@ -52,7 +52,7 @@ const MenuLogin = ({ setCurrentView }) => {
           fontWeight: "bold",
           letterSpacing: "2px"
         }}>
-          ASECGC
+          ControlFit
         </h1>
 
         {/* Subtítulo */}
@@ -63,7 +63,7 @@ const MenuLogin = ({ setCurrentView }) => {
           lineHeight: "1.6",
           maxWidth: "400px"
         }}>
-          Aplicación para el Seguimiento de Ejercicios y Control de Grasa Corporal
+          Aplicación para el Seguimiento de Ejercicios y Control de Grasa Corporal ControlFit
         </p>
 
         {/* Características principales */}
@@ -164,49 +164,8 @@ const MenuLogin = ({ setCurrentView }) => {
         </div>
       </div>
 
-      {/* Información adicional */}
-      <div style={{
-        backgroundColor: "white",
-        borderRadius: "15px",
-        padding: "25px",
-        maxWidth: "500px",
-        width: "100%",
-        textAlign: "center",
-        boxShadow: "0 4px 15px rgba(0,0,0,0.05)"
-      }}>
-        <h3 style={{
-          margin: "0 0 15px 0",
-          color: "#1f4f63",
-          fontSize: "1.2rem"
-        }}>
-          ¿Por qué elegir ASECGC?
-        </h3>
-        
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "15px",
-          fontSize: "14px",
-          color: "#495057"
-        }}>
-          <div>
-            <strong style={{ color: "#007bff" }}>✓ Método Científico</strong><br />
-            Fórmulas de la Marina de EE.UU. para cálculo preciso de grasa corporal
-          </div>
-          <div>
-            <strong style={{ color: "#28a745" }}>✓ Entrenamiento Inteligente</strong><br />
-            Sistema automático de sobrecarga progresiva personalizada
-          </div>
-          <div>
-            <strong style={{ color: "#ffc107" }}>✓ Seguimiento Completo</strong><br />
-            Historial detallado y gráficos de progreso en tiempo real
-          </div>
-          <div>
-            <strong style={{ color: "#17a2b8" }}>✓ Datos Seguros</strong><br />
-            Información protegida con tecnología Firebase de Google
-          </div>
-        </div>
-      </div>
+      
+      
     </div>
   );
 };

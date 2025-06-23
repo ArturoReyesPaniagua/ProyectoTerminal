@@ -90,7 +90,7 @@ const App = () => {
       {/* Metadata para PWA (Progressive Web App) */}
       <div style={{ display: "none" }}>
         <meta name="theme-color" content="#1f4f63" />
-        <meta name="description" content="ASECGC - Aplicación para el Seguimiento de Ejercicios y Control de Grasa Corporal" />
+        <meta name="description" content="ControlFIt - Aplicación para el Seguimiento de Ejercicios y Control de Grasa Corporal" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </div>
     </div>

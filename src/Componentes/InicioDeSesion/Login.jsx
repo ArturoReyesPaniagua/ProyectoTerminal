@@ -96,7 +96,7 @@ const Login = ({ setCurrentView }) => {
           color: "#6c757d",
           fontSize: "1rem"
         }}>
-          Accede a tu cuenta de ASECGC
+          Accede a tu cuenta de ControlFIt
         </p>
       </div>
 
@@ -286,7 +286,7 @@ const Login = ({ setCurrentView }) => {
             }
           }}
         >
-          📝 Crear Cuenta Nueva
+          📝 Crear Cuenta 
         </button>
 
         {/* Botón de regresar */}

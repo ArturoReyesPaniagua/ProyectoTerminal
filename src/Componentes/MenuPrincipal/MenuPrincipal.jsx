@@ -81,14 +81,14 @@ const MenuPrincipalCompleto = ({ setCurrentView }) => {
             fontSize: "2.5rem",
             fontWeight: "bold"
           }}>
-            ASECGC
+            ControlFIt
           </h1>
           <p style={{ 
             margin: "0", 
             color: "#6c757d",
             fontSize: "1.2rem"
           }}>
-            Aplicación para el Seguimiento de Ejercicios y Control de Grasa Corporal
+            Aplicación para el Seguimiento de Ejercicios y Control de Grasa Corporal ControlFit
           </p>
           
           {/* Botón de cerrar sesión */}
