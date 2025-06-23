@@ -157,7 +157,7 @@ const SignIn = ({ setCurrentView }) => {
           color: "#6c757d",
           fontSize: "1rem"
         }}>
-          Únete a la comunidad ASECGC
+          Únete a la comunidad ControlFIt
         </p>
       </div>
 
@@ -500,7 +500,7 @@ const SignIn = ({ setCurrentView }) => {
         }}>
           🔒 Al crear una cuenta, aceptas que tu información será protegida con tecnología Firebase de Google.
           <br />
-          💪 ¡Prepárate para transformar tu entrenamiento con ASECGC!
+          💪 ¡Prepárate para transformar tu entrenamiento con ControlFIt!
         </div>
       </div>
     </div>
