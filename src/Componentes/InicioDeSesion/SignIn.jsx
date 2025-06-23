@@ -500,7 +500,7 @@ const SignIn = ({ setCurrentView }) => {
         }}>
           🔒 Al crear una cuenta, aceptas que tu información será protegida con tecnología Firebase de Google.
           <br />
-          💪 ¡Prepárate para transformar tu entrenamiento con ControlFIt!
+          💪 ¡Prepárate para transformar tu entrenamiento con ControlFit!
         </div>
       </div>
     </div>
