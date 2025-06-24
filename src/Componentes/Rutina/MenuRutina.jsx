@@ -612,7 +612,7 @@ const MenuRutina = ({ setCurrentView }) => {
                             if (!saving) e.target.style.backgroundColor = "#dc3545";
                           }}
                         >
-                          - Quitar
+                          - Eliminar ejercicio
                         </button>
                       </div>
                     ))}
