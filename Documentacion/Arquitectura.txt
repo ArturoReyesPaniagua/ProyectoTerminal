@@ -1,0 +1,76 @@
+"index.js" -> "react"
+"index.js" -> react-dom.client
+"index.js" -> "App.js"
+"index.js" -> bootstrap.dist/css.bootstrap
+
+"firebase-config.js" -> firebase.app
+"firebase-config.js" -> firebase.auth
+"firebase-config.js" -> firebase.firestore
+
+"App.js" -> "react"
+"App.js" -> Componentes.ViewRenderer
+"App.js" -> Componentes.Comunes.ComponenteCarga
+"App.js" -> "firebase-config.js"
+"App.js" -> firebase.firestore
+
+Componentes.ViewRenderer -> Componentes.InicioDeSesion.MenuLogin
+Componentes.ViewRenderer -> Componentes.InicioDeSesion.Login
+Componentes.ViewRenderer -> Componentes.InicioDeSesion.SingIn
+Componentes.ViewRenderer -> Componentes.InicioDeSesion.FormularioDatos
+Componentes.ViewRenderer -> Componentes.MenuPrincipal.MenuLogin
+Componentes.ViewRenderer -> Componentes.Rutina.MenuRutina
+Componentes.ViewRenderer -> Componentes.Rutina.RegistrarEjercicio
+Componentes.ViewRenderer -> Componentes.RegistroRutina.RegistroRutina
+Componentes.ViewRenderer -> Componentes.RegistroRutina.CalculoDinamico
+Componentes.ViewRenderer -> Componentes.Grasa.CalculoGrasa
+Componentes.ViewRenderer -> Componentes.Historial.Historial
+Componentes.ViewRenderer -> Componentes.Graficos.GraficosProgreso
+
+Componentes.Rutina.RegistrarEjercicio -> "firebase-config.js"
+Componentes.Rutina.RegistrarEjercicio -> react
+Componentes.Rutina.RegistrarEjercicio -> firebase.firestore
+
+Componentes.Rutina.MenuRutina -> react
+Componentes.Rutina.MenuRutina -> "firebase-config.js"
+Componentes.Rutina.MenuRutina -> Componentes.Comunes.ComponenteCarga
+Componentes.Rutina.MenuRutina -> firebase.firestore
+
+Componentes.RegistroRutina.ResumenEntrenamiento -> react
+
+Componentes.RegistroRutina.RegistroRutina -> react
+Componentes.RegistroRutina.RegistroRutina -> "firebase-config.js"
+Componentes.RegistroRutina.RegistroRutina -> firebase.firestore
+Componentes.RegistroRutina.RegistroRutina -> Componentes.RegistroRutina.CalculoDinamicoMejorado
+Componentes.RegistroRutina.RegistroRutina -> Componentes.RegistroRutina.ResumenEntrenamiento
+
+Componentes.RegistroRutina.CalculoDinamicoMejorado -> react
+Componentes.RegistroRutina.CalculoDinamicoMejorado -> firebase.firestore
+Componentes.RegistroRutina.CalculoDinamicoMejorado -> "firebase-config.js"
+
+Componentes.MenuPrincipal."MenuPrincipal.js" -> react
+Componentes.MenuPrincipal."MenuPrincipal.js" -> "firebase-config.js"
+
+Componentes.InicioDeSesion.SingIn -> react
+Componentes.InicioDeSesion.SingIn -> firebase.firestore
+Componentes.InicioDeSesion.SingIn -> firebase.auth
+Componentes.InicioDeSesion.SingIn -> "firebase-config.js"
+
+Componentes.InicioDeSesion.MenuLogin -> react
+
+Componentes.InicioDeSesion.Login -> react
+Componentes.InicioDeSesion.Login -> firebase.auth
+Componentes.InicioDeSesion.Login -> "firebase-config.js"
+
+Componentes.InicioDeSesion.FormularioDatos -> react
+Componentes.InicioDeSesion.FormularioDatos -> "firebase-config.js"
+Componentes.InicioDeSesion.FormularioDatos -> firebase.firestore
+
+Componentes.Historial.Historial -> react
+Componentes.Historial.Historial -> "firebase-config.js"
+Componentes.Historial.Historial -> firebase.firestore
+
+Componentes.Grasa.CalculoGrasa -> react
+Componentes.Grasa.CalculoGrasa -> "firebase-config.js"
+Componentes.Grasa.CalculoGrasa -> firebase.firestore
+
+Componentes.Graficos.GraficosProgreso
