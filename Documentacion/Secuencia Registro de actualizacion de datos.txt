@@ -1,0 +1,15 @@
+title Diagrama de actualización de datos corporales
+Usuario->MenuPrincipal:Click "Actualizar datos"
+MenuPrincipal->ViewRenderer:setCurrentView("actualizar")
+ViewRenderer->ActualizarDatos:Renderizar formulario actualización
+ActualizarDatos->Firestore:getDoc(usuarios/uid)
+Firestore-->ActualizarDatos:Datos actuales usuario
+ActualizarDatos->ActualizarDatos:Pre-llenar formulario con datos existentes
+Usuario->ActualizarDatos:Modifica datos (peso, medidas, etc.)
+Usuario->ActualizarDatos:Click "Actualizar datos"
+ActualizarDatos->Firestore:updateDoc(usuarios/uid, nuevosData + fechaRegistro)
+ActualizarDatos->Firestore:addDoc(usuarios/uid/historialProgreso, nuevosData + fecha)
+Firestore-->ActualizarDatos:Success (datos principales)
+Firestore-->ActualizarDatos:Success (historial progreso)
+ActualizarDatos->ViewRenderer:setCurrentView("menuPrincipal")
+note over Usuario:Datos actualizados y guardados en historial

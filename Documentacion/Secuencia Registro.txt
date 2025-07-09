@@ -1,0 +1,14 @@
+2. Diagrama de Registro de Usuario
+title Diagrama de secuencia de registro de usuario
+Usuario->MenuLogin:Click "Registrarse"
+MenuLogin->ViewRenderer:setCurrentView("signIn")
+ViewRenderer->SignIn:Renderizar formulario registro
+Usuario->SignIn:Ingresa email, contraseña
+Usuario->SignIn:Click "Registrarse"
+SignIn->Firebase Auth:createUserWithEmailAndPassword(email, password)
+Firebase Auth-->SignIn:userCredential
+SignIn->Firestore:setDoc(usuarios/uid, {datosCompletos: false})
+Firestore-->SignIn:Success
+SignIn->ViewRenderer:setCurrentView("formularioDatos")
+ViewRenderer->FormularioDatos:Renderizar formulario datos
+note over FormularioDatos:Usuario debe completar datos corporales

@@ -73,4 +73,9 @@ Componentes.Grasa.CalculoGrasa -> react
 Componentes.Grasa.CalculoGrasa -> "firebase-config.js"
 Componentes.Grasa.CalculoGrasa -> firebase.firestore
 
-Componentes.Graficos.GraficosProgreso
+Componentes.Graficos.GraficosProgreso -> react
+Componentes.Graficos.GraficosProgreso -> firebase.firestore
+Componentes.Graficos.GraficosProgreso -> firebase.firestore
+Componentes.Graficos.GraficosProgreso -> recharts
+
+Componentes.Comunes.ComponenteCarga -> react

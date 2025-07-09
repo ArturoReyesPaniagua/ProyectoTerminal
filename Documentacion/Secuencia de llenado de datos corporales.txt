@@ -1,0 +1,10 @@
+title Diagrama de formulario de datos corporales
+Usuario->FormularioDatos:Ingresa datos (edad, sexo, peso, medidas)
+Usuario->FormularioDatos:Click "Guardar datos"
+FormularioDatos->Firestore:setDoc(usuarios/uid, userData + {datosCompletos: true})
+FormularioDatos->Firestore:addDoc(usuarios/uid/historial, userData + fecha)
+Firestore-->FormularioDatos:Success (datos principales)
+Firestore-->FormularioDatos:Success (historial)
+FormularioDatos->ViewRenderer:setCurrentView("menuPrincipal")
+ViewRenderer->MenuPrincipal:Renderizar menú principal
+note over Usuario:Ahora puede acceder a todas las funcionalidades
