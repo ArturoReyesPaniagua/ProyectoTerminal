@@ -1,5 +1,5 @@
 import React from "react";
-import "./menuprincipal.css";
+//import "./menuprincipal.css";
 
 // Configuración de opciones del menú
 const MENU_OPTIONS = [

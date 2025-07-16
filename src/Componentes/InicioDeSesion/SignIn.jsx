@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../firebase-config";
 import { doc, setDoc } from "firebase/firestore";
-import "./login.css";
+//import "./login.css";
 
 // Hook personalizado para registro
 const useSignIn = (setCurrentView, setError) => {

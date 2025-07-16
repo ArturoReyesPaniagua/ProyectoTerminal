@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase-config";
 import { doc, collection, addDoc, setDoc, getDoc } from "firebase/firestore";
-import "./formularioDatos.css";
+//import "./formularioDatos.css";
 
 // Hook personalizado para manejar los datos del formulario
 const useFormularioDatos = (currentUser) => {

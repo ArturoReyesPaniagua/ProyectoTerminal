@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import ViewRenderer from "./Componentes/ViewRenderer";
 import { auth, db } from "./firebase-config";
 import { doc, getDoc } from "firebase/firestore";
+import "./global.css"; // ← Agregar esta línea
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(null);
