@@ -1,337 +1,162 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
+import "./login.css";
 
-const Login = ({ setCurrentView }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+// Hook personalizado para manejo de login
+const useLogin = (setCurrentView, setError) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleLoginClick = async () => {
-    if (!email || !password) {
-      setError("Por favor, completa todos los campos");
-      return;
+  const updateField = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const validateForm = () => {
+    if (!formData.email) {
+      setError("El correo electrónico es requerido");
+      return false;
     }
+    if (!formData.password) {
+      setError("La contraseña es requerida");
+      return false;
+    }
+    if (!formData.email.includes("@")) {
+      setError("Ingresa un correo electrónico válido");
+      return false;
+    }
+    return true;
+  };
 
-    setLoading(true);
-    setError("");
+  const handleLogin = async () => {
+    if (!validateForm()) return;
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // El redirect se maneja automáticamente en App.js por onAuthStateChanged
+      setLoading(true);
+      setError(null);
+      
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      // El App.js se encarga de la redirección basada en el estado del usuario
+      
     } catch (error) {
-      console.error("Error al iniciar sesión:", error.message);
+      console.error("Error al iniciar sesión:", error);
       
-      // Mensajes de error más amigables
-      let errorMessage = "Error al iniciar sesión";
-      switch (error.code) {
-        case "auth/user-not-found":
-          errorMessage = "No existe una cuenta con este correo electrónico";
-          break;
-        case "auth/wrong-password":
-          errorMessage = "Contraseña incorrecta";
-          break;
-        case "auth/invalid-email":
-          errorMessage = "Formato de correo electrónico inválido";
-          break;
-        case "auth/too-many-requests":
-          errorMessage = "Demasiados intentos fallidos. Intenta más tarde";
-          break;
-        default:
-          errorMessage = "Error de conexión. Revisa tu internet";
-      }
+      // Manejo de errores más específico
+      const errorMessages = {
+        "auth/user-not-found": "No existe una cuenta con este correo electrónico",
+        "auth/wrong-password": "Contraseña incorrecta",
+        "auth/too-many-requests": "Demasiados intentos fallidos. Intenta más tarde",
+        "auth/user-disabled": "Esta cuenta ha sido deshabilitada",
+        "auth/invalid-email": "Correo electrónico inválido",
+        "auth/network-request-failed": "Error de conexión. Verifica tu internet",
+      };
       
-      setError(errorMessage);
+      const message = errorMessages[error.code] || "Error al iniciar sesión. Intenta de nuevo";
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleLoginClick();
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
+  return {
+    formData,
+    updateField,
+    handleLogin,
+    handleKeyPress,
+    loading,
+  };
+};
+
+const Login = ({ setCurrentView, error, setError }) => {
+  const {
+    formData,
+    updateField,
+    handleLogin,
+    handleKeyPress,
+    loading,
+  } = useLogin(setCurrentView, setError);
+
   return (
-    <div style={{
-      minHeight: "100vh",
-      backgroundColor: "#f8f9fa",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: "20px",
-      fontFamily: "Arial, sans-serif"
-    }}>
-      {/* Header con logo */}
-      <div style={{
-        textAlign: "center",
-        marginBottom: "30px"
-      }}>
-        <div style={{
-          backgroundColor: "#1f4f63",
-          width: "80px",
-          height: "80px",
-          borderRadius: "50%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "0 auto 20px auto",
-          boxShadow: "0 4px 15px rgba(31, 79, 99, 0.3)"
-        }}>
-          <span style={{ fontSize: "32px", color: "white" }}>🔐</span>
-        </div>
-        <h2 style={{
-          margin: "0",
-          color: "#1f4f63",
-          fontSize: "2rem",
-          fontWeight: "bold"
-        }}>
-          Iniciar Sesión
-        </h2>
-        <p style={{
-          margin: "10px 0 0 0",
-          color: "#6c757d",
-          fontSize: "1rem"
-        }}>
-          Accede a tu cuenta de ControlFIt
-        </p>
+    <div className="login-container">
+      <div className="logo">
+        <span>ControlFit</span>
       </div>
-
-      {/* Formulario de login */}
-      <div style={{
-        backgroundColor: "white",
-        borderRadius: "20px",
-        padding: "40px",
-        boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-        width: "100%",
-        maxWidth: "400px"
-      }}>
-        {/* Campo de email */}
-        <div style={{ marginBottom: "25px" }}>
-          <label style={{
-            display: "block",
-            marginBottom: "8px",
-            fontWeight: "bold",
-            color: "#495057",
-            fontSize: "14px"
-          }}>
-            📧 Correo Electrónico
-          </label>
-          <input
-            type="email"
-            placeholder="tu@correo.com"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setError(""); // Limpiar error al escribir
-            }}
-            onKeyPress={handleKeyPress}
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "15px",
-              border: error ? "2px solid #dc3545" : "2px solid #dee2e6",
-              borderRadius: "10px",
-              fontSize: "16px",
-              transition: "border-color 0.3s ease",
-              backgroundColor: loading ? "#f8f9fa" : "white",
-              cursor: loading ? "not-allowed" : "text"
-            }}
-            onFocus={(e) => !error && (e.target.style.borderColor = "#007bff")}
-            onBlur={(e) => !error && (e.target.style.borderColor = "#dee2e6")}
-          />
-        </div>
-
-        {/* Campo de contraseña */}
-        <div style={{ marginBottom: "25px" }}>
-          <label style={{
-            display: "block",
-            marginBottom: "8px",
-            fontWeight: "bold",
-            color: "#495057",
-            fontSize: "14px"
-          }}>
-            🔒 Contraseña
-          </label>
-          <input
-            type="password"
-            placeholder="Tu contraseña"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setError(""); // Limpiar error al escribir
-            }}
-            onKeyPress={handleKeyPress}
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "15px",
-              border: error ? "2px solid #dc3545" : "2px solid #dee2e6",
-              borderRadius: "10px",
-              fontSize: "16px",
-              transition: "border-color 0.3s ease",
-              backgroundColor: loading ? "#f8f9fa" : "white",
-              cursor: loading ? "not-allowed" : "text"
-            }}
-            onFocus={(e) => !error && (e.target.style.borderColor = "#007bff")}
-            onBlur={(e) => !error && (e.target.style.borderColor = "#dee2e6")}
-          />
-        </div>
-
-        {/* Mensaje de error */}
+      
+      <div className="form-box">
+        <h2>Iniciar Sesión</h2>
+        
         {error && (
-          <div style={{
-            backgroundColor: "#f8d7da",
-            border: "1px solid #f5c6cb",
-            color: "#721c24",
-            padding: "12px",
-            borderRadius: "8px",
-            marginBottom: "20px",
-            fontSize: "14px",
-            textAlign: "center"
-          }}>
-            ⚠️ {error}
+          <div className="error-message">
+            {error}
+            <button onClick={() => setError(null)} className="close-error">✕</button>
           </div>
         )}
 
-        {/* Botón de login */}
-        <button
-          onClick={handleLoginClick}
-          disabled={loading || !email || !password}
-          style={{
-            width: "100%",
-            padding: "15px",
-            backgroundColor: loading || !email || !password ? "#6c757d" : "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "25px",
-            fontSize: "18px",
-            fontWeight: "bold",
-            cursor: loading || !email || !password ? "not-allowed" : "pointer",
-            transition: "all 0.3s ease",
-            marginBottom: "20px",
-            boxShadow: loading || !email || !password ? "none" : "0 4px 15px rgba(0, 123, 255, 0.3)"
-          }}
-          onMouseOver={(e) => {
-            if (!loading && email && password) {
-              e.target.style.backgroundColor = "#0056b3";
-              e.target.style.transform = "translateY(-2px)";
-            }
-          }}
-          onMouseOut={(e) => {
-            if (!loading && email && password) {
-              e.target.style.backgroundColor = "#007bff";
-              e.target.style.transform = "translateY(0)";
-            }
-          }}
-        >
-          {loading ? "⏳ Iniciando sesión..." : "🚀 Iniciar Sesión"}
-        </button>
-
-        {/* Divider */}
-        <div style={{
-          textAlign: "center",
-          margin: "20px 0",
-          position: "relative"
-        }}>
-          <div style={{
-            height: "1px",
-            backgroundColor: "#dee2e6",
-            width: "100%"
-          }}></div>
-          <span style={{
-            backgroundColor: "white",
-            padding: "0 15px",
-            color: "#6c757d",
-            fontSize: "14px",
-            position: "absolute",
-            left: "50%",
-            top: "-8px",
-            transform: "translateX(-50%)"
-          }}>
-            ¿No tienes cuenta?
-          </span>
+        <div className="form-group">
+          <label htmlFor="email">Correo electrónico</label>
+          <input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => updateField("email", e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="login-input"
+            placeholder="ejemplo@correo.com"
+            disabled={loading}
+            autoComplete="email"
+          />
         </div>
 
-        {/* Botón de registro */}
-        <button
-          onClick={() => setCurrentView("signIn")}
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "15px",
-            backgroundColor: "transparent",
-            color: "#28a745",
-            border: "2px solid #28a745",
-            borderRadius: "25px",
-            fontSize: "16px",
-            fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            transition: "all 0.3s ease",
-            marginBottom: "15px"
-          }}
-          onMouseOver={(e) => {
-            if (!loading) {
-              e.target.style.backgroundColor = "#28a745";
-              e.target.style.color = "white";
-            }
-          }}
-          onMouseOut={(e) => {
-            if (!loading) {
-              e.target.style.backgroundColor = "transparent";
-              e.target.style.color = "#28a745";
-            }
-          }}
-        >
-          📝 Crear Cuenta 
-        </button>
+        <div className="form-group">
+          <label htmlFor="password">Contraseña</label>
+          <input
+            id="password"
+            type="password"
+            value={formData.password}
+            onChange={(e) => updateField("password", e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="login-input"
+            placeholder="Tu contraseña"
+            disabled={loading}
+            autoComplete="current-password"
+          />
+        </div>
 
-        {/* Botón de regresar */}
-        <button
-          onClick={() => setCurrentView("menu")}
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: "transparent",
-            color: "#6c757d",
-            border: "1px solid #dee2e6",
-            borderRadius: "20px",
-            fontSize: "14px",
-            cursor: loading ? "not-allowed" : "pointer",
-            transition: "all 0.3s ease"
-          }}
-          onMouseOver={(e) => {
-            if (!loading) {
-              e.target.style.backgroundColor = "#f8f9fa";
-            }
-          }}
-          onMouseOut={(e) => {
-            if (!loading) {
-              e.target.style.backgroundColor = "transparent";
-            }
-          }}
-        >
-          ← Regresar al Inicio
-        </button>
-      </div>
+        <div className="login-buttons">
+          <button 
+            onClick={handleLogin} 
+            className="login-button"
+            disabled={loading}
+          >
+            {loading ? "Iniciando..." : "Iniciar Sesión"}
+          </button>
+          <button 
+            onClick={() => setCurrentView("signIn")} 
+            className="login-button secondary"
+            disabled={loading}
+          >
+            Registrarse
+          </button>
+        </div>
 
-      {/* Footer informativo */}
-      <div style={{
-        marginTop: "30px",
-        textAlign: "center",
-        maxWidth: "400px"
-      }}>
-        <p style={{
-          fontSize: "12px",
-          color: "#6c757d",
-          lineHeight: "1.5"
-        }}>
-          🔒 Tu información está protegida con tecnología de encriptación Firebase de Google
-        </p>
+        <div className="login-footer">
+          <button 
+            onClick={() => setCurrentView("menu")} 
+            className="link-button"
+            disabled={loading}
+          >
+            ← Volver al menú
+          </button>
+        </div>
       </div>
     </div>
   );

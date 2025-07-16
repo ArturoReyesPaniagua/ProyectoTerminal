@@ -1,0 +1,577 @@
+/* ===== ESTILOS GENERALES ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+}
+
+/* ===== CONTENEDORES PRINCIPALES ===== */
+.login-container, 
+.menu-container, 
+.formulario-datos-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+/* ===== LOGO ===== */
+.logo {
+  background-color: #1f4f63;
+  width: 300px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #ff0000;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.logo-text {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.logo-subtitle {
+  font-size: 14px;
+  color: #ffffff;
+  margin-top: 5px;
+  font-weight: normal;
+}
+
+/* ===== CAJAS DE FORMULARIO ===== */
+.form-box, 
+.formulario-datos-box {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.form-box h2, 
+.formulario-datos-box h2 {
+  margin-bottom: 20px;
+  color: #1f4f63;
+  font-size: 24px;
+}
+
+/* ===== CAMPOS DE ENTRADA ===== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #1f4f63;
+}
+
+.login-input, 
+.formulario-datos-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.login-input:focus, 
+.formulario-datos-input:focus {
+  border-color: #1f4f63;
+}
+
+.login-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Validación visual */
+.login-input.valid {
+  border-color: #28a745;
+}
+
+.login-input.invalid {
+  border-color: #dc3545;
+}
+
+/* ===== BOTONES ===== */
+.login-buttons, 
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.login-button, 
+.menu-button, 
+.boton-establecer-datos {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #1f4f63;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-button:hover, 
+.menu-button:hover, 
+.boton-establecer-datos:hover {
+  background-color: #2a5a70;
+  transform: translateY(-1px);
+}
+
+.login-button:disabled, 
+.menu-button:disabled, 
+.boton-establecer-datos:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-button.secondary {
+  background-color: #ff0000;
+}
+
+.login-button.secondary:hover {
+  background-color: #e60000;
+}
+
+/* Botones del menú principal */
+.menu-button {
+  padding: 15px 20px;
+  font-size: 18px;
+}
+
+.menu-button-icon {
+  font-size: 20px;
+}
+
+.menu-button-text {
+  font-size: 16px;
+}
+
+/* ===== MENSAJES DE ERROR ===== */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #f5c6cb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-error {
+  background: none;
+  border: none;
+  color: #721c24;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  margin-left: 10px;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+/* ===== LOADING ===== */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.loading {
+  font-size: 18px;
+  color: #1f4f63;
+  text-align: center;
+}
+
+/* ===== INFORMACIÓN DEL USUARIO ===== */
+.user-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 100;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.user-email {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f4f63;
+}
+
+.user-status {
+  font-size: 12px;
+  color: #28a745;
+}
+
+.logout-button {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #e60000;
+}
+
+/* ===== VALIDACIÓN DE CONTRASEÑA ===== */
+.password-requirements {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  font-size: 12px;
+  text-align: left;
+}
+
+.password-requirements ul {
+  margin: 5px 0 0 0;
+  padding-left: 15px;
+}
+
+.password-requirements li.valid {
+  color: #28a745;
+}
+
+.password-requirements li.invalid {
+  color: #dc3545;
+}
+
+.password-match {
+  margin-top: 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.password-match.valid {
+  color: #28a745;
+}
+
+.password-match.invalid {
+  color: #dc3545;
+}
+
+/* ===== PIE DE PÁGINA ===== */
+.login-footer, 
+.menu-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #1f4f63;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.link-button:hover {
+  color: #2a5a70;
+}
+
+.tip {
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+  margin: 10px 0;
+}
+
+/* ===== ENTRENAMIENTO (CÁLCULO DINÁMICO) ===== */
+.calculo-dinamico-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.workout-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.workout-header h2 {
+  color: #1f4f63;
+  margin-bottom: 10px;
+}
+
+.workout-progress {
+  background-color: #e9ecef;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #495057;
+  display: inline-block;
+}
+
+.exercise-progress {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.progress-header h3 {
+  color: #1f4f63;
+  margin: 0;
+}
+
+.muscle-group {
+  background-color: #1f4f63;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat label {
+  font-size: 14px;
+  color: #666;
+}
+
+.stat span {
+  font-weight: 600;
+  color: #1f4f63;
+}
+
+.volume-progress {
+  margin-top: 15px;
+}
+
+.volume-progress label {
+  font-size: 14px;
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #28a745;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  display: block;
+}
+
+.rep-input-section {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.rep-input-section label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #1f4f63;
+}
+
+.rep-input {
+  width: 100px;
+  padding: 10px;
+  border: 2px solid #1f4f63;
+  border-radius: 5px;
+  font-size: 24px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.register-set-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-set-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.register-set-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268;
+}
+
+.completed-exercises {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #d4edda;
+  border-radius: 5px;
+}
+
+.completed-exercises h4 {
+  color: #155724;
+  margin-top: 0;
+}
+
+.completed-exercises ul {
+  margin: 10px 0 0 0;
+  padding-left: 20px;
+}
+
+.completed-exercises li {
+  color: #155724;
+  margin-bottom: 5px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .form-box, 
+  .formulario-datos-box {
+    margin: 10px;
+    padding: 20px;
+  }
+  
+  .logo {
+    width: 250px;
+    height: 120px;
+    font-size: 28px;
+  }
+  
+  .user-info {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 20px;
+  }
+  
+  .calculo-dinamico-container {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .progress-stats {
+    grid-template-columns: 1fr;
+  }
+}
