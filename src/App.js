@@ -51,7 +51,7 @@ const App = () => {
       setCurrentView( "menu" );
     } catch( error ) {
       console.error( "Error al cerrar sesión:", error );
-      // No es crítico, el usuario puede refrescar la página
+      
     }
   };
 
