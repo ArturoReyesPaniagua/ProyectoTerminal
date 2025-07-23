@@ -174,81 +174,38 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      backgroundColor: "#f8f9fa",
-      padding: "20px"
-    }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+    <div className="rutinas-container">
+      <div className="rutinas-content">
         {/* Header */}
-        <div style={{
-          backgroundColor: "white",
-          borderRadius: "15px",
-          padding: "30px",
-          marginBottom: "30px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-          textAlign: "center"
-        }}>
-          <div style={{
-            backgroundColor: "#28a745",
-            width: "80px",
-            height: "80px",
-            borderRadius: "50%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            margin: "0 auto 20px auto",
-            boxShadow: "0 4px 15px rgba(40, 167, 69, 0.3)"
-          }}>
-            <span style={{ fontSize: "32px", color: "white" }}>💪</span>
+        <div className="section-header">
+          <div className="ejercicio-header-icon">
+            <span>💪</span>
           </div>
-          <h1 style={{ 
-            margin: "0 0 10px 0", 
-            color: "#1f4f63",
-            fontSize: "2.5rem",
-            fontWeight: "bold"
-          }}>
+          <h1 className="section-title">
             Registrar Nuevo Ejercicio
           </h1>
-          <p style={{ margin: "0", color: "#6c757d", fontSize: "1.1rem" }}>
+          <p className="section-subtitle">
             Agrega un nuevo ejercicio a tu biblioteca personal
           </p>
         </div>
 
         {/* Información de ejercicios existentes */}
         {ejerciciosExistentes.length > 0 && (
-          <div style={{
-            backgroundColor: "#e7f3ff",
-            border: "1px solid #b8daff",
-            borderRadius: "10px",
-            padding: "15px",
-            marginBottom: "30px"
-          }}>
-            <h4 style={{ margin: "0 0 10px 0", color: "#004085" }}>
+          <div className="ejercicios-existentes">
+            <h4>
               📚 Tienes {ejerciciosExistentes.length} ejercicio(s) registrado(s)
             </h4>
-            <div style={{ 
-              fontSize: "14px", 
-              color: "#004085",
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "10px"
-            }}>
+            <div className="ejercicios-tags">
               {ejerciciosExistentes.slice(0, 5).map((ej, index) => (
                 <span 
                   key={index}
-                  style={{
-                    backgroundColor: "#b8daff",
-                    padding: "4px 8px",
-                    borderRadius: "12px",
-                    fontSize: "12px"
-                  }}
+                  className="ejercicio-tag"
                 >
                   {ej.nombre}
                 </span>
               ))}
               {ejerciciosExistentes.length > 5 && (
-                <span style={{ color: "#6c757d", fontSize: "12px" }}>
+                <span className="ejercicios-mas">
                   y {ejerciciosExistentes.length - 5} más...
                 </span>
               )}
@@ -257,35 +214,16 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
         )}
 
         {/* Formulario */}
-        <div style={{
-          backgroundColor: "white",
-          borderRadius: "15px",
-          padding: "30px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
-        }}>
+        <div className="formulario-ejercicio">
           {/* Información básica */}
-          <div style={{ marginBottom: "30px" }}>
-            <h3 style={{ 
-              margin: "0 0 20px 0", 
-              color: "#1f4f63",
-              borderBottom: "2px solid #007bff",
-              paddingBottom: "10px"
-            }}>
+          <div className="formulario-seccion">
+            <h3>
               📝 Información Básica
             </h3>
             
-            <div style={{ 
-              display: "grid", 
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", 
-              gap: "20px" 
-            }}>
-              <div>
-                <label style={{ 
-                  display: "block", 
-                  marginBottom: "8px", 
-                  fontWeight: "bold",
-                  color: "#495057"
-                }}>
+            <div className="formulario-grid">
+              <div className="form-field">
+                <label>
                   Nombre del Ejercicio *
                 </label>
                 <input
@@ -294,42 +232,19 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   disabled={loading}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "2px solid #dee2e6",
-                    borderRadius: "8px",
-                    fontSize: "16px",
-                    transition: "border-color 0.3s ease",
-                    backgroundColor: loading ? "#f8f9fa" : "white"
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = "#007bff"}
-                  onBlur={(e) => e.target.style.borderColor = "#dee2e6"}
+                  className="input-ejercicio"
                 />
               </div>
 
-              <div>
-                <label style={{ 
-                  display: "block", 
-                  marginBottom: "8px", 
-                  fontWeight: "bold",
-                  color: "#495057"
-                }}>
+              <div className="form-field">
+                <label>
                   Grupo Muscular Principal *
                 </label>
                 <select
                   value={musculo}
                   onChange={(e) => setMusculo(e.target.value)}
                   disabled={loading}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "2px solid #dee2e6",
-                    borderRadius: "8px",
-                    fontSize: "16px",
-                    backgroundColor: loading ? "#f8f9fa" : "white",
-                    cursor: loading ? "not-allowed" : "pointer"
-                  }}
+                  className="select-ejercicio"
                 >
                   <option value="">Seleccione un músculo...</option>
                   {musculosDisponibles.map((m) => (
@@ -339,13 +254,8 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
               </div>
             </div>
 
-            <div style={{ marginTop: "20px" }}>
-              <label style={{ 
-                display: "block", 
-                marginBottom: "8px", 
-                fontWeight: "bold",
-                color: "#495057"
-              }}>
+            <div className="form-field">
+              <label>
                 Descripción (Opcional)
               </label>
               <textarea
@@ -354,45 +264,20 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
                 onChange={(e) => setDescripcion(e.target.value)}
                 disabled={loading}
                 rows="3"
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: "2px solid #dee2e6",
-                  borderRadius: "8px",
-                  fontSize: "16px",
-                  resize: "vertical",
-                  fontFamily: "inherit",
-                  backgroundColor: loading ? "#f8f9fa" : "white"
-                }}
-                onFocus={(e) => e.target.style.borderColor = "#007bff"}
-                onBlur={(e) => e.target.style.borderColor = "#dee2e6"}
+                className="textarea-ejercicio"
               />
             </div>
           </div>
 
           {/* Parámetros de entrenamiento */}
-          <div style={{ marginBottom: "30px" }}>
-            <h3 style={{ 
-              margin: "0 0 20px 0", 
-              color: "#1f4f63",
-              borderBottom: "2px solid #28a745",
-              paddingBottom: "10px"
-            }}>
+          <div className="formulario-seccion parametros">
+            <h3>
               🎯 Parámetros de Entrenamiento
             </h3>
             
-            <div style={{ 
-              display: "grid", 
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", 
-              gap: "20px" 
-            }}>
-              <div>
-                <label style={{ 
-                  display: "block", 
-                  marginBottom: "8px", 
-                  fontWeight: "bold",
-                  color: "#495057"
-                }}>
+            <div className="formulario-grid parametros">
+              <div className="form-field">
+                <label>
                   Peso Máximo (kg) *
                 </label>
                 <input
@@ -404,24 +289,12 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
                   value={pesoMaximo}
                   onChange={(e) => setPesoMaximo(e.target.value)}
                   disabled={loading}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "2px solid #dee2e6",
-                    borderRadius: "8px",
-                    fontSize: "16px",
-                    backgroundColor: loading ? "#f8f9fa" : "white"
-                  }}
+                  className="input-ejercicio"
                 />
               </div>
 
-              <div>
-                <label style={{ 
-                  display: "block", 
-                  marginBottom: "8px", 
-                  fontWeight: "bold",
-                  color: "#495057"
-                }}>
+              <div className="form-field">
+                <label>
                   Repeticiones Máximas *
                 </label>
                 <input
@@ -432,24 +305,12 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
                   value={repeticionesMaximas}
                   onChange={(e) => setRepeticionesMaximas(e.target.value)}
                   disabled={loading}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "2px solid #dee2e6",
-                    borderRadius: "8px",
-                    fontSize: "16px",
-                    backgroundColor: loading ? "#f8f9fa" : "white"
-                  }}
+                  className="input-ejercicio"
                 />
               </div>
 
-              <div>
-                <label style={{ 
-                  display: "block", 
-                  marginBottom: "8px", 
-                  fontWeight: "bold",
-                  color: "#495057"
-                }}>
+              <div className="form-field">
+                <label>
                   Sets Máximos *
                 </label>
                 <input
@@ -460,51 +321,33 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
                   value={setsMaximos}
                   onChange={(e) => setSetsMaximos(e.target.value)}
                   disabled={loading}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "2px solid #dee2e6",
-                    borderRadius: "8px",
-                    fontSize: "16px",
-                    backgroundColor: loading ? "#f8f9fa" : "white"
-                  }}
+                  className="input-ejercicio"
                 />
               </div>
             </div>
 
             {/* Información calculada */}
             {pesoMaximo && repeticionesMaximas && setsMaximos && (
-              <div style={{
-                marginTop: "20px",
-                backgroundColor: "#f8f9fa",
-                padding: "15px",
-                borderRadius: "8px",
-                border: "1px solid #dee2e6"
-              }}>
-                <h5 style={{ margin: "0 0 10px 0", color: "#495057" }}>
+              <div className="info-calculada">
+                <h5>
                   📊 Información Calculada:
                 </h5>
-                <div style={{ 
-                  display: "grid", 
-                  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", 
-                  gap: "15px",
-                  fontSize: "14px"
-                }}>
+                <div className="info-calculada-grid">
                   <div>
                     <strong>Volumen Máximo:</strong><br />
-                    <span style={{ color: "#007bff", fontWeight: "bold" }}>
+                    <span className="info-valor volumen">
                       {calcularVolumenEstimado().toFixed(0)} kg×reps×sets
                     </span>
                   </div>
                   <div>
                     <strong>Categoría:</strong><br />
-                    <span style={{ color: "#28a745", fontWeight: "bold" }}>
+                    <span className="info-valor categoria">
                       {musculo ? categorizarEjercicio(musculo) : "Sin clasificar"}
                     </span>
                   </div>
                   <div>
                     <strong>1RM Estimado:</strong><br />
-                    <span style={{ color: "#ffc107", fontWeight: "bold" }}>
+                    <span className="info-valor rm">
                       {(parseFloat(pesoMaximo) * 1.15 || 0).toFixed(1)} kg
                     </span>
                   </div>
@@ -514,17 +357,11 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
           </div>
 
           {/* Información importante */}
-          <div style={{
-            backgroundColor: "#fff3cd",
-            border: "1px solid #ffeaa7",
-            borderRadius: "8px",
-            padding: "15px",
-            marginBottom: "30px"
-          }}>
-            <h4 style={{ margin: "0 0 10px 0", color: "#856404" }}>
+          <div className="consejos-box">
+            <h4>
               💡 Consejos para registrar ejercicios:
             </h4>
-            <ul style={{ margin: "0", paddingLeft: "20px", color: "#856404", fontSize: "14px" }}>
+            <ul>
               <li><strong>Peso máximo:</strong> El peso más alto que puedes manejar con buena técnica</li>
               <li><strong>Repeticiones máximas:</strong> Las repeticiones que puedes hacer con ese peso máximo</li>
               <li><strong>Sets máximos:</strong> El número máximo de series que realizas normalmente</li>
@@ -533,43 +370,11 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
           </div>
 
           {/* Botones de acción */}
-          <div style={{ 
-            display: "flex", 
-            gap: "15px", 
-            justifyContent: "center",
-            flexWrap: "wrap"
-          }}>
+          <div className="acciones-container">
             <button
               onClick={registrarEjercicio}
               disabled={loading || !nombre || !musculo || !pesoMaximo || !repeticionesMaximas || !setsMaximos}
-              style={{
-                padding: "15px 30px",
-                backgroundColor: (loading || !nombre || !musculo || !pesoMaximo || !repeticionesMaximas || !setsMaximos) ? 
-                               "#6c757d" : "#28a745",
-                color: "white",
-                border: "none",
-                borderRadius: "25px",
-                fontSize: "18px",
-                fontWeight: "bold",
-                cursor: (loading || !nombre || !musculo || !pesoMaximo || !repeticionesMaximas || !setsMaximos) ? 
-                       "not-allowed" : "pointer",
-                transition: "all 0.3s ease",
-                boxShadow: (loading || !nombre || !musculo || !pesoMaximo || !repeticionesMaximas || !setsMaximos) ? 
-                          "none" : "0 4px 15px rgba(40, 167, 69, 0.3)",
-                minWidth: "200px"
-              }}
-              onMouseOver={(e) => {
-                if (!loading && nombre && musculo && pesoMaximo && repeticionesMaximas && setsMaximos) {
-                  e.target.style.backgroundColor = "#218838";
-                  e.target.style.transform = "translateY(-2px)";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!loading && nombre && musculo && pesoMaximo && repeticionesMaximas && setsMaximos) {
-                  e.target.style.backgroundColor = "#28a745";
-                  e.target.style.transform = "translateY(0)";
-                }
-              }}
+              className="btn-accion crear"
             >
               {loading ? "⏳ Registrando..." : "💾 Registrar Ejercicio"}
             </button>
@@ -577,29 +382,7 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
             <button
               onClick={limpiarFormulario}
               disabled={loading}
-              style={{
-                padding: "15px 30px",
-                backgroundColor: "transparent",
-                color: "#ffc107",
-                border: "2px solid #ffc107",
-                borderRadius: "25px",
-                fontSize: "18px",
-                fontWeight: "bold",
-                cursor: loading ? "not-allowed" : "pointer",
-                transition: "all 0.3s ease"
-              }}
-              onMouseOver={(e) => {
-                if (!loading) {
-                  e.target.style.backgroundColor = "#ffc107";
-                  e.target.style.color = "white";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!loading) {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "#ffc107";
-                }
-              }}
+              className="login-button secondary"
             >
               🗑️ Limpiar Formulario
             </button>
@@ -607,23 +390,7 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
             <button
               onClick={() => setCurrentView("menuRutina")}
               disabled={loading}
-              style={{
-                padding: "15px 30px",
-                backgroundColor: "#6c757d",
-                color: "white",
-                border: "none",
-                borderRadius: "25px",
-                fontSize: "18px",
-                fontWeight: "bold",
-                cursor: loading ? "not-allowed" : "pointer",
-                transition: "all 0.3s ease"
-              }}
-              onMouseOver={(e) => {
-                if (!loading) e.target.style.backgroundColor = "#545b62";
-              }}
-              onMouseOut={(e) => {
-                if (!loading) e.target.style.backgroundColor = "#6c757d";
-              }}
+              className="boton-cancelar"
             >
               ← Regresar
             </button>

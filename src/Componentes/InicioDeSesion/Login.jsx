@@ -3,8 +3,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 //import "./login.css";
 
-// Hook personalizado para manejo de login
-const useLogin = (setCurrentView, setError) => {
+// Hook para manejo de login
+const useLogin = (setError) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -44,7 +44,7 @@ const useLogin = (setCurrentView, setError) => {
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       
-      // Manejo de errores más específico
+      // Manejo de errores segun el código de error
       const errorMessages = {
         "auth/user-not-found": "No existe una cuenta con este correo electrónico",
         "auth/wrong-password": "Contraseña incorrecta",
@@ -61,6 +61,7 @@ const useLogin = (setCurrentView, setError) => {
     }
   };
 
+  // Manejo de Enter para enviar el formulario
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleLogin();
@@ -76,6 +77,7 @@ const useLogin = (setCurrentView, setError) => {
   };
 };
 
+// Componente de Login
 const Login = ({ setCurrentView, error, setError }) => {
   const {
     formData,
@@ -86,6 +88,8 @@ const Login = ({ setCurrentView, error, setError }) => {
   } = useLogin(setCurrentView, setError);
 
   return (
+
+    //formato del login
     <div className="login-container">
       <div className="logo">
         <span>ControlFit</span>

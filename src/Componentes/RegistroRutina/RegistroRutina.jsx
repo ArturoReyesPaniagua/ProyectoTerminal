@@ -46,111 +46,56 @@ const RegistroRutinaActualizado = ({ setCurrentView }) => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "100vh",
-        flexDirection: "column"
-      }}>
-        <div style={{ fontSize: "18px", marginBottom: "20px" }}>Cargando rutinas...</div>
-        <div style={{ 
-          width: "50px", 
-          height: "50px", 
-          border: "5px solid #f3f3f3",
-          borderTop: "5px solid #007bff",
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite"
-        }}></div>
+      <div className="loading-container">
+        <div className="loading">Cargando rutinas...</div>
+        <div className="spinner"></div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <div className="rutinas-container">
       {/* Paso 1: Selección de rutina */}
       {currentStep === 1 && (
-        <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-          <div style={{
-            backgroundColor: "white",
-            borderRadius: "15px",
-            padding: "30px",
-            boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-            textAlign: "center"
-          }}>
-            <h2 style={{ 
-              margin: "0 0 20px 0", 
-              color: "#1f4f63",
-              fontSize: "2rem"
-            }}>
+        <div className="rutinas-content">
+          <div className="registro-rutina-header">
+            <h2>
               🏋️‍♂️ Seleccionar Rutina de Entrenamiento
             </h2>
             
-            <p style={{ 
-              color: "#6c757d", 
-              fontSize: "1.1rem", 
-              marginBottom: "30px" 
-            }}>
+            <p className="registro-rutina-subtitle">
               Elige la rutina que vas a realizar hoy
             </p>
 
             {rutinas.length === 0 ? (
-              <div style={{ padding: "40px" }}>
-                <div style={{ fontSize: "48px", marginBottom: "20px" }}>📝</div>
-                <h3 style={{ color: "#6c757d", marginBottom: "20px" }}>
+              <div className="estado-vacio-ejercicios">
+                <div className="estado-vacio-icono">📝</div>
+                <h3>
                   No hay rutinas disponibles
                 </h3>
-                <p style={{ color: "#6c757d", marginBottom: "30px" }}>
+                <p>
                   Primero debes crear una rutina para poder entrenar
                 </p>
                 <button
                   onClick={() => setCurrentView("menuRutina")}
-                  style={{
-                    padding: "15px 30px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "25px",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    marginRight: "15px"
-                  }}
+                  className="login-button"
                 >
                   Crear Rutina
                 </button>
                 <button
                   onClick={() => setCurrentView("menuPrincipal")}
-                  style={{
-                    padding: "15px 30px",
-                    backgroundColor: "#6c757d",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "25px",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    cursor: "pointer"
-                  }}
+                  className="boton-cancelar"
                 >
                   Regresar
                 </button>
               </div>
             ) : (
               <div>
-                <div style={{ marginBottom: "30px" }}>
+                <div className="form-field">
                   <select
                     onChange={(e) => e.target.value && handleRutinaSeleccionada(e.target.value)}
                     defaultValue=""
-                    style={{
-                      width: "100%",
-                      maxWidth: "400px",
-                      padding: "15px",
-                      fontSize: "16px",
-                      border: "2px solid #dee2e6",
-                      borderRadius: "10px",
-                      backgroundColor: "white",
-                      cursor: "pointer"
-                    }}
+                    className="select-rutina-grande"
                   >
                     <option value="" disabled>
                       🎯 Selecciona una rutina
@@ -164,88 +109,36 @@ const RegistroRutinaActualizado = ({ setCurrentView }) => {
                 </div>
 
                 {/* Vista previa de rutinas */}
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                  gap: "20px",
-                  marginTop: "30px"
-                }}>
+                <div className="rutinas-preview">
                   {rutinas.map((rutina) => (
                     <div
                       key={rutina.id}
                       onClick={() => handleRutinaSeleccionada(rutina.id)}
-                      style={{
-                        backgroundColor: "#f8f9fa",
-                        border: "2px solid #dee2e6",
-                        borderRadius: "10px",
-                        padding: "20px",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease",
-                        textAlign: "left"
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.borderColor = "#007bff";
-                        e.currentTarget.style.backgroundColor = "#e7f3ff";
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.borderColor = "#dee2e6";
-                        e.currentTarget.style.backgroundColor = "#f8f9fa";
-                        e.currentTarget.style.transform = "translateY(0)";
-                      }}
+                      className="rutina-card"
                     >
-                      <h4 style={{ 
-                        margin: "0 0 10px 0", 
-                        color: "#1f4f63",
-                        fontSize: "1.2rem"
-                      }}>
+                      <h4>
                         {rutina.nombre}
                       </h4>
-                      <p style={{ 
-                        color: "#6c757d", 
-                        margin: "0 0 10px 0",
-                        fontSize: "14px"
-                      }}>
+                      <p>
                         {rutina.ejercicios?.length || 0} ejercicios
                       </p>
-                      <div style={{
-                        fontSize: "12px",
-                        color: "#007bff",
-                        fontWeight: "bold"
-                      }}>
+                      <div className="rutina-card-action">
                         Click para seleccionar →
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ marginTop: "30px" }}>
+                <div className="botones-navegacion">
                   <button
                     onClick={() => setCurrentView("menuPrincipal")}
-                    style={{
-                      padding: "12px 30px",
-                      backgroundColor: "#6c757d",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "25px",
-                      fontSize: "16px",
-                      cursor: "pointer",
-                      marginRight: "15px"
-                    }}
+                    className="boton-cancelar"
                   >
                     ← Regresar al Menú
                   </button>
                   <button
                     onClick={() => setCurrentView("menuRutina")}
-                    style={{
-                      padding: "12px 30px",
-                      backgroundColor: "#28a745",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "25px",
-                      fontSize: "16px",
-                      cursor: "pointer"
-                    }}
+                    className="boton-establecer-datos"
                   >
                     + Crear Nueva Rutina
                   </button>
@@ -274,14 +167,6 @@ const RegistroRutinaActualizado = ({ setCurrentView }) => {
           rutinaSeleccionada={rutinaSeleccionada}
         />
       )}
-
-      {/* Estilos para la animación de carga */}
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { auth, db } from "../../firebase-config";
 import { doc, setDoc } from "firebase/firestore";
 //import "./login.css";
 
-// Hook personalizado para registro
+// Hook  para registro
 const useSignIn = (setCurrentView, setError) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -30,7 +30,7 @@ const useSignIn = (setCurrentView, setError) => {
       return false;
     }
 
-    if (password.length < 6) {
+    if (password.length < 6 ) {
       setError("La contraseña debe tener al menos 6 caracteres");
       return false;
     }
@@ -40,7 +40,7 @@ const useSignIn = (setCurrentView, setError) => {
       return false;
     }
 
-    // Validación de seguridad básica
+    // Validación mayúsculas y minúsculas
     if (!/(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
       setError("La contraseña debe tener al menos una mayúscula y una minúscula");
       return false;
@@ -48,7 +48,7 @@ const useSignIn = (setCurrentView, setError) => {
 
     return true;
   };
-
+  // Manejo del registro
   const handleRegister = async () => {
     if (!validateForm()) return;
 
@@ -77,7 +77,7 @@ const useSignIn = (setCurrentView, setError) => {
     } catch (error) {
       console.error("Error al registrarse:", error);
       
-      // Manejo de errores específicos
+      // Manejo de errores según el código de error
       const errorMessages = {
         "auth/email-already-in-use": "Ya existe una cuenta con este correo electrónico",
         "auth/invalid-email": "Correo electrónico inválido",
@@ -92,7 +92,8 @@ const useSignIn = (setCurrentView, setError) => {
       setLoading(false);
     }
   };
-
+  
+  // Manejo de Enter para enviar el formulario
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleRegister();

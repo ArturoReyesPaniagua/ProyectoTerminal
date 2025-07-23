@@ -287,10 +287,10 @@ const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
   );
 
   return (
-    <div className="calculo-dinamico-container">
-      <div className="workout-header">
+    <div className="calculo-dinamico-mejorado">
+      <div className="workout-header-mejorado">
         <h2>Entrenamiento en Progreso</h2>
-        <div className="workout-progress">
+        <div className="workout-progress-badge">
           Ejercicio {currentIndex + 1} de {objetivos.length}
         </div>
       </div>

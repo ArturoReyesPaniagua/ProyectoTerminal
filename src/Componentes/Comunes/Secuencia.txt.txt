@@ -1,0 +1,58 @@
+title UI 
+
+
+actor Usuario
+
+participant index.js
+participant App
+participant react
+
+participant /firebase-config
+
+participant ViewRenderer
+participant MenuLogin
+participant Login
+participant Firebase Auth
+participant Firestore
+participant MenuPrincipal
+participant FormularioDatos
+
+Usuario->index.js:Navega a la aplicación\ncon la url
+index.js->App:<App />
+App->react:useState(null)
+App<--react:[currentUser, setCurrentUser]
+App->react:useState("menu");
+App<--react:  const [currentView, setCurrentView]
+App->react:useState(true);
+App<--react:const [loading, setLoading]
+App->react:  useEffect( callBackEffect, [] )
+App<--react:return
+index.js<--App:return <div className="loading">Cargando...</div>
+Usuario<--index.js:Cargando
+
+note over react: Cuando se carga el \njsx retornado a \nApp.js
+App<-react:callBackEffect()
+App->/firebase-config:auth.onAuthStateChanged( callBackAuthChanged )
+App<--/firebase-config:unsubscribe
+App-->react:()=>unsubscribe()
+App->ViewRenderer:SetCurrentView("menuLogin")
+ViewRenderer->MenuLogin:<MenuLogin />
+Usuario->MenuLogin:Click "Iniciar sesión"
+MenuLogin->ViewRenderer:setCurrentView("login")
+ViewRenderer->Login:Renderizar formulario login
+Usuario->Login:Ingresa email y contraseña
+Usuario->Login:Click "Iniciar Sesión"
+Login->Firebase Auth:signInWithEmailAndPassword(email, password)
+Firebase Auth-->Login:userCredential
+Login->Firestore:getDoc(usuarios/uid)
+Firestore-->Login:userData
+
+alt Si datosCompletos = true
+    Login->App:navigate('/menuprincipal')
+    App->ViewRenderer:setCurrentView("menuPrincipal")
+    ViewRenderer->MenuPrincipal:Renderizar menú principal
+else Si datosCompletos = false o no existe
+    Login->App:navigate('/formulario-datos')
+    App->ViewRenderer:setCurrentView("formularioDatos")
+    ViewRenderer->FormularioDatos:Renderizar formulario
+end

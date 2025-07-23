@@ -52,7 +52,7 @@ const ViewRenderer = ({
     );
   }
 
-  // Props comunes para todos los componentes
+  // Props para los demas componentes
   const commonProps = {
     setCurrentView,
     currentUser,
