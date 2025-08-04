@@ -1,0 +1,35 @@
+title IU 1 Menú Login 
+
+actor Usuario
+participant index.js
+participant App.js
+participant react
+participant ViewRenderer.jsx
+participant MenuLogin.jsx
+
+note over App.js: currentView = "menu"
+App.js->ViewRenderer.jsx:<ViewRenderer\n  currentView={"menu"}\n  setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
+
+ViewRenderer.jsx->MenuLogin.jsx:<MenuLogin {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />
+
+note over MenuLogin.jsx: Componente funcional sin estados
+
+ViewRenderer.jsx<--MenuLogin.jsx:JSX 
+App.js<--ViewRenderer.jsx:JSX
+App.js-->index.js:jsx\n
+Usuario<--index.js:U1 Menú Login
+
+alt click Iniciar sesión
+    Usuario->MenuLogin.jsx:click Iniciar sesión
+    MenuLogin.jsx->react:setCurrentView("login")
+    react-->MenuLogin.jsx:
+    index.js<-react:render
+    == ir a index inicia ==
+else click Registrarse
+    Usuario->MenuLogin.jsx:click Registrarse
+    MenuLogin.jsx->react:setCurrentView("signIn")
+    react-->MenuLogin.jsx:
+    index.js<-react:render
+    == ir a index inicia ==
+end
+    

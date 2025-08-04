@@ -1,0 +1,93 @@
+title IU 2 Login - Completo con React
+
+actor Usuario
+participant index.js
+participant App.js
+participant ViewRenderer.jsx
+participant Login.jsx
+participant react
+
+participant Firebase Auth
+
+App.js->ViewRenderer.jsx:<ViewRenderer\n currentView={"login"} \n setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
+ViewRenderer.jsx->Login.jsx:<login {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />
+
+Login.jsx->react:useState({ email: "", password: "" })
+react-->Login.jsx:[formData, setFormData]
+Login.jsx->react:useState(false)
+react-->Login.jsx:[loading, setLoading]
+
+ViewRenderer.jsx<--Login.jsx:JSX formulario login
+App.js<--ViewRenderer.jsx:JSX
+App.js-->index.js:JSX
+Usuario<--index.js:Ve formulario de login
+
+alt Usuario ingresa email
+    Usuario->Login.jsx:onChange en campo email
+    Login.jsx->react:setFormData(prev => ({...prev, email: value}))
+    react-->Login.jsx:actualizar estado formData
+    Usuario<--Login.jsx:Campo actualizado
+end
+
+alt Usuario ingresa password
+    Usuario->Login.jsx:onChange campo password
+    Login.jsx->react:setFormData(prev => ({...prev, password: value}))
+    react-->Login.jsx:actualizar estado formData
+    Usuario<--Login.jsx:Campo actualizado
+end
+
+alt Usuario hace click en "Iniciar Sesión"
+    Usuario->Login.jsx:onClick botón "Iniciar Sesión"
+    Login.jsx->Login.jsx:handleLogin()
+    Login.jsx->Login.jsx:validateForm()
+    
+    alt validación exitosa
+        Login.jsx->react:setLoading(true)
+        react-->Login.jsx:return
+ 
+        Login.jsx->react:setError(null)
+        react-->Login.jsx:return
+        Login.jsx->Firebase Auth:signInWithEmailAndPassword(auth, email, password)
+        
+        alt autenticación exitosa
+            Firebase Auth-->Login.jsx:userCredential
+            Firebase Auth-->Login.jsx:onAuthStateChanged(user)
+            Login.jsx->react:setCurrentUser(user)
+            Login.jsx<--react:return
+              alt Tiene datos registrados 
+              
+                Login.jsx->react:setCurrentView("menuPrincipal" o "formularioDatos")
+                Login.jsx<--react:return
+                 ==Ir a index inicia==
+              else 
+                Login.jsx->react:setCurrentView("formularioDatos")
+                Login.jsx<--react:return
+                 ==Ir a index inicia==
+              end
+            
+        else error de autenticación
+            Firebase Auth-->Login.jsx:error
+            Login.jsx->react:setError(errorMessage)
+            react-->Login.jsx:return
+            Login.jsx->react:setLoading(false)
+            react-->Login.jsx:return
+            Usuario<--Login.jsx:Ve mensaje de error
+        end
+        
+    else validación fallida
+        Login.jsx->react:setError(mensaje)
+        react-->Login.jsx:Return
+        Usuario<--Login.jsx:Ve error de validación
+    end
+    
+else Usuario hace click en "Registrarse"
+    Usuario->Login.jsx:onClick botón "Registrarse"
+    Login.jsx->react:setCurrentView("signIn")
+    ==Ir a index inicia==
+    
+else Usuario hace click en "Volver al menú"
+    Usuario->Login.jsx:onClick "Volver al menú"
+    Login.jsx->react:setCurrentView("menu")
+    react->App.js:
+    ==Ir a index inicia==
+end

@@ -11,8 +11,11 @@ import MenuPrincipal from "./MenuPrincipal/MenuPrincipal";
 import MenuRutina from "./Rutina/MenuRutina";
 import RegistrarEjercicio from "./Rutina/RegistrarEjercicio";
 import RegistroRutina from "./RegistroRutina/RegistroRutina";
+import CalculoGrasa from "./Grasa/CalculoGrasa";
+import Historial from "./Historial/Historial";
+import GraficosProgreso from "./Graficos/GraficosProgreso";
 
-// Mapa de vistas para mejor mantenimiento
+// Mapa de vistas
 const VIEWS = {
   // Autenticación
   menu: MenuLogin,
@@ -25,6 +28,9 @@ const VIEWS = {
   menuRutina: MenuRutina,
   registrarEjercicio: RegistrarEjercicio,
   registrarRutina: RegistroRutina,
+  grasa: CalculoGrasa,
+  historial: Historial,
+  graficos: GraficosProgreso,
 };
 
 const ViewRenderer = ({ 
@@ -35,6 +41,19 @@ const ViewRenderer = ({
   error,
   setError 
 }) => {
+  // Manejo especial para actualizar datos
+  if (currentView === "actualizarDatos") {
+    return (
+      <FormularioDatos
+        setCurrentView={setCurrentView}
+        currentUser={currentUser}
+        mode="update"
+        error={error}
+        setError={setError}
+      />
+    );
+  }
+
   // Buscar el componente en el mapa
   const Component = VIEWS[currentView];
   
@@ -52,7 +71,7 @@ const ViewRenderer = ({
     );
   }
 
-  // Props para los demas componentes
+  // Props comunes para todos los componentes
   const commonProps = {
     setCurrentView,
     currentUser,

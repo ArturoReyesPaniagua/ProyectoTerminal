@@ -1,0 +1,112 @@
+title  inicio de la aplicación
+
+actor Usuario
+participant index.js
+participant App
+participant react
+participant /firebase-config
+participant ViewRenderer
+participant MenuLogin
+participant Login
+participant Firebase Auth
+participant Firestore
+participant MenuPrincipal
+participant FormularioDatos
+
+Usuario->index.js:Navega a la aplicación\ncon la url
+==index inicia==
+index.js->App:<App />
+App->react:useState(null)
+App<--react:[currentUser, setCurrentUser]
+App->react:useState("menu");
+App<--react: [currentView, setCurrentView]
+App->react:useState(true);
+App<--react:[loading, setLoading]
+App->react: useState(null)
+App<--react:[error, setError]
+
+App->react:  useEffect( cbEffect, [] )
+App<--react:return
+
+alt loading == true
+    index.js<--App:return <div className="loading">Cargando...</div>
+    Usuario<--index.js:Cargando
+    
+    note over react: Cuando se monta el \njsx retornado a \nApp.js
+    App<-react:cbEffect()
+    App->/firebase-config:auth.onAuthStateChanged( cbHandleAuthChanged )
+    App<--/firebase-config:unsubscribe
+    App-->react:()=>unsubscribe()
+
+== Auth State Changed ==
+    App<-/firebase-config:cbHandleAuthChanged( user )
+    App->react:setError(null)
+    App<--react:return
+    
+    alt user != null
+        App->react:setCurrentUser( user )
+        App<--react: return
+        App->Firestore:doc( db, "usuarios", user.uid )
+        App<--Firestore:userDocRef
+        App->Firestore:getDoc( userDocRef )
+        App<--Firestore:userDoc
+        
+        alt userDoc.exists() && userDoc.data()?.datosCompletos
+            App->react: setCurrentView( "menuPrincipal" )
+            App<--react: return
+        else 
+            App->react: setCurrentView( "formularioDatos" )
+            App<--react: return
+        end
+    else user == null
+        App->react:setCurrentUser( null )
+        App<--react: return
+        App->react: setCurrentView( "menu" )
+        App<--react: return
+    end
+    
+    App->react: setLoading( false )
+    App<--react: return
+    App-->/firebase-config:return
+    
+    note over react: detecta cambios y renderiza de nuevo
+    index.js<-react:render
+    == ir a index inicia==
+
+else loading == false
+    App->ViewRenderer:<ViewRenderer\n  currentView={currentView}\n  setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
+    
+alt currentView == "menu"
+    == ir a IU 1 ==
+
+else currentView == "login"
+    == ir a IU 2 ==
+
+else currentView == "signIn"
+    == ir a IU 3 ==
+
+else currentView == "formularioDatos"
+    == ir a IU 4 ==
+
+else currentView == "menuPrincipal"
+    == ir a IU 5 ==
+
+else currentView == "menuRutina"
+    == ir a IU 6 ==
+
+else currentView == "registrarRutina"
+    == ir a IU 6 ==
+
+else currentView == "registrarEjercicio"
+    == ir a IU 11 ==
+
+else currentView == "grasa"
+    == ir a IU 8 ==
+
+else currentView == "historial"
+    == ir a IU 9 ==
+
+else currentView == "graficos"
+    == ir a IU 10 ==
+
+end

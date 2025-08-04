@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../../firebase-config";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { 
+  calcularPorcentajeGrasa, 
+  calcularTendencia,
+  formatearFecha 
+} from "../../utils/fitnessUtils";
 
 const Historial = ({ setCurrentView }) => {
   const [historialData, setHistorialData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [vistaActual, setVistaActual] = useState("grasa"); // "grasa" o "medidas"
+  const [vistaActual, setVistaActual] = useState("grasa");
 
   useEffect(() => {
     const cargarHistorial = async () => {
@@ -21,18 +26,14 @@ const Historial = ({ setCurrentView }) => {
             return {
               id: doc.id,
               ...data,
-              fechaFormateada: new Date(data.fecha).toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })
+              fechaFormateada: formatearFecha(data.fecha)
             };
           });
           
           // Calcular porcentaje de grasa para cada entrada
           const historialConGrasa = historialList.map(entrada => ({
             ...entrada,
-            porcentajeGrasa: calcularPorcentajeGrasa(entrada)
+            porcentajeGrasa: calcularPorcentajeGrasa(entrada).toFixed(1)
           }));
           
           setHistorialData(historialConGrasa);
@@ -47,64 +48,18 @@ const Historial = ({ setCurrentView }) => {
     cargarHistorial();
   }, []);
 
-  const calcularPorcentajeGrasa = (datos) => {
-    const { sexo, cintura, cuello, cuadriceps } = datos;
-    let altura = datos.altura || 170;
-    
-    if (altura < 3) {
-      altura = altura * 100;
-    }
-
-    let porcentaje = 0;
-
-    if (sexo === "Masculino") {
-      porcentaje = 86.010 * Math.log10(cintura - cuello) - 70.041 * Math.log10(altura) + 36.76;
-    } else if (sexo === "Femenino") {
-      porcentaje = 163.205 * Math.log10(cintura + cuadriceps - cuello) - 97.684 * Math.log10(altura) - 78.387;
-    }
-
-    return Math.max(2, Math.min(50, porcentaje)).toFixed(1);
-  };
-
   const obtenerTendencia = (datos, campo) => {
-    if (datos.length < 2) return "neutral";
+    if (datos.length < 2) return null;
     
-    const primero = parseFloat(datos[datos.length - 1][campo]);
-    const ultimo = parseFloat(datos[0][campo]);
+    const actual = parseFloat(datos[0][campo]);
+    const anterior = parseFloat(datos[1][campo]);
+    const menosEsMejor = campo === "porcentajeGrasa";
     
-    if (campo === "porcentajeGrasa") {
-      return ultimo < primero ? "bajando" : ultimo > primero ? "subiendo" : "neutral";
-    } else {
-      return ultimo > primero ? "subiendo" : ultimo < primero ? "bajando" : "neutral";
-    }
-  };
-
-  const obtenerIconoTendencia = (tendencia, campo) => {
-    const esGrasa = campo === "porcentajeGrasa";
-    
-    if (tendencia === "subiendo") {
-      return { 
-        icono: "↑", 
-        color: esGrasa ? "#e74c3c" : "#27ae60", 
-        texto: esGrasa ? "Aumentando" : "Aumentando" 
-      };
-    } else if (tendencia === "bajando") {
-      return { 
-        icono: "↓", 
-        color: esGrasa ? "#27ae60" : "#e74c3c", 
-        texto: esGrasa ? "Disminuyendo" : "Disminuyendo" 
-      };
-    } else {
-      return { 
-        icono: "→", 
-        color: "#6c757d", 
-        texto: "Sin cambios" 
-      };
-    }
+    return calcularTendencia(actual, anterior, menosEsMejor);
   };
 
   if (loading) {
-    return <div>Cargando historial...</div>;
+    return <div className="loading">Cargando historial...</div>;
   }
 
   if (historialData.length === 0) {
@@ -112,10 +67,16 @@ const Historial = ({ setCurrentView }) => {
       <div style={{ padding: "20px", textAlign: "center" }}>
         <h2>Historial de Progreso</h2>
         <p>No hay datos de historial disponibles.</p>
-        <button onClick={() => setCurrentView("formularioDatos")}>
+        <button 
+          onClick={() => setCurrentView("formularioDatos")}
+          className="btn btn-primario"
+        >
           Registrar Primeros Datos
         </button>
-        <button onClick={() => setCurrentView("menuPrincipal")}>
+        <button 
+          onClick={() => setCurrentView("menuPrincipal")}
+          className="btn btn-secundario"
+        >
           Regresar al Menú
         </button>
       </div>
@@ -181,19 +142,19 @@ const Historial = ({ setCurrentView }) => {
                 <div style={{ fontSize: "14px", color: "#6c757d" }}>
                   Última medición: {historialData[0].fechaFormateada}
                 </div>
-                {historialData.length > 1 && (
-                  <div style={{ marginTop: "10px" }}>
-                    {(() => {
-                      const tendencia = obtenerTendencia(historialData, "porcentajeGrasa");
-                      const indicador = obtenerIconoTendencia(tendencia, "porcentajeGrasa");
-                      return (
-                        <span style={{ color: indicador.color, fontWeight: "bold" }}>
-                          {indicador.icono} {indicador.texto}
-                        </span>
-                      );
-                    })()}
-                  </div>
-                )}
+                {historialData.length > 1 && (() => {
+                  const tendencia = obtenerTendencia(historialData, "porcentajeGrasa");
+                  return tendencia && (
+                    <div style={{ marginTop: "10px" }}>
+                      <span style={{ color: tendencia.color, fontWeight: "bold" }}>
+                        {tendencia.icono} {tendencia.tendencia === "mejorando" ? "Mejorando" : 
+                          tendencia.tendencia === "empeorando" ? "Empeorando" : "Sin cambios"}
+                        {tendencia.cambioPorcentaje > 0 && 
+                          ` (${tendencia.cambio > 0 ? '+' : ''}${tendencia.cambio.toFixed(1)}%)`}
+                      </span>
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -225,19 +186,19 @@ const Historial = ({ setCurrentView }) => {
                     Peso: {entrada.peso} kg
                   </div>
                 </div>
-                {index < historialData.length - 1 && (
-                  <div style={{ textAlign: "right" }}>
-                    {(() => {
-                      const diferencia = (parseFloat(entrada.porcentajeGrasa) - parseFloat(historialData[index + 1].porcentajeGrasa)).toFixed(1);
-                      const color = diferencia < 0 ? "#27ae60" : diferencia > 0 ? "#e74c3c" : "#6c757d";
-                      return (
-                        <div style={{ color, fontWeight: "bold" }}>
-                          {diferencia > 0 ? "+" : ""}{diferencia}%
-                        </div>
-                      );
-                    })()}
-                  </div>
-                )}
+                {index < historialData.length - 1 && (() => {
+                  const actual = parseFloat(entrada.porcentajeGrasa);
+                  const anterior = parseFloat(historialData[index + 1].porcentajeGrasa);
+                  const diferencia = (actual - anterior).toFixed(1);
+                  const color = diferencia < 0 ? "#27ae60" : diferencia > 0 ? "#e74c3c" : "#6c757d";
+                  return (
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ color, fontWeight: "bold" }}>
+                        {diferencia > 0 ? "+" : ""}{diferencia}%
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>
@@ -256,7 +217,6 @@ const Historial = ({ setCurrentView }) => {
             {["peso", "cintura", "cuello", "cuadriceps"].map(medida => {
               const ultimaMediana = historialData.length > 0 ? historialData[0][medida] : 0;
               const tendencia = obtenerTendencia(historialData, medida);
-              const indicador = obtenerIconoTendencia(tendencia, medida);
               
               return (
                 <div 
@@ -274,14 +234,14 @@ const Historial = ({ setCurrentView }) => {
                   <div style={{ fontSize: "24px", fontWeight: "bold" }}>
                     {ultimaMediana} {medida === "peso" ? "kg" : "cm"}
                   </div>
-                  {historialData.length > 1 && (
+                  {historialData.length > 1 && tendencia && (
                     <div style={{ 
-                      color: indicador.color, 
+                      color: tendencia.color, 
                       fontSize: "12px", 
                       fontWeight: "bold",
                       marginTop: "5px"
                     }}>
-                      {indicador.icono} {indicador.texto}
+                      {tendencia.icono} {tendencia.cambio > 0 ? '+' : ''}{tendencia.cambio.toFixed(1)}
                     </div>
                   )}
                 </div>

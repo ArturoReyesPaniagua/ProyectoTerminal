@@ -1,0 +1,92 @@
+title IU 3 SignIn Registro - Completo con React
+
+actor Usuario
+participant index.js
+participant App.js
+participant ViewRenderer.jsx
+participant SignIn.jsx
+participant react
+
+participant Firebase Auth
+participant Firestore
+
+== Montaje de la vista SignIn ==
+
+App.js->ViewRenderer.jsx: <ViewRenderer\n currentView={"signIn"} \nsetCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
+ViewRenderer.jsx->SignIn.jsx: <SignIn  \nsetCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />
+SignIn.jsx->react:useState({\n  email: "",\n  password: "",\n  confirmPassword: ""\n})
+react-->SignIn.jsx:[formData, setFormData]
+SignIn.jsx->react:useState(false)
+react-->SignIn.jsx:[loading, setLoading]
+
+Usuario<--SignIn.jsx:Ve formulario de registro
+== Usuario llena campos ==
+
+loop Por cada campo del formulario
+    Usuario->SignIn.jsx:Ingresa datos al formulario
+    SignIn.jsx->react:setFormData(prev => ({...prev, [field]: value}))
+    react-->SignIn.jsx:return
+    
+    alt es confirmPassword
+        SignIn.jsx->SignIn.jsx:calcular isPasswordMatch
+        alt Exito en la coincidencia de la contraseña
+        Usuario<--SignIn.jsx:Muestra que contraseña coincide
+        else Fracaso en la coincidencia de la contraseña
+        Usuario<--SignIn.jsx:Muestra  que la contraseña no coincide
+        end
+    end
+    
+end
+
+== Registro del usuario ==
+
+alt Usuario hace click en "Registrarse" AND contraseña coincide
+    Usuario->SignIn.jsx:onClick botón "Registrarse"
+    SignIn.jsx->SignIn.jsx:handleRegister()
+    SignIn.jsx->SignIn.jsx:validateForm()
+
+    alt validación exitosa
+        SignIn.jsx->react:setLoading(true)
+        react-->SignIn.jsx:return
+        SignIn.jsx->react:setError(null)
+        
+SignIn.jsx<--react:return
+        SignIn.jsx->Firebase Auth:createUserWithEmailAndPassword(auth, email, password)
+
+        alt registro exitoso
+            Firebase Auth-->SignIn.jsx:userCredential
+            SignIn.jsx->SignIn.jsx:const user = userCredential.user
+            SignIn.jsx->Firestore:setDoc(doc(db, "usuarios", user.uid), {\n  email: user.email,\n  datosCompletos: false,\n  fechaRegistro: new Date().toISOString()\n})
+            Firestore-->SignIn.jsx:return success
+
+            SignIn.jsx->react:setCurrentUser(user)
+SignIn.jsx<--react:return
+            SignIn.jsx->react:setCurrentView("formularioDatos")
+
+
+            == ir a index inicia ==
+        else error de registro
+            Firebase Auth-->SignIn.jsx:error
+            SignIn.jsx->react:setError(errorMessage)
+            SignIn.jsx-->react:return
+            Usuario<--SignIn.jsx:Ve mensaje de error
+        end
+
+    else validación fallida
+        SignIn.jsx->react:setError(mensaje)
+SignIn.jsx<--react:return
+        Usuario<--SignIn.jsx:Ve errores de validación
+    end
+
+else Usuario hace click en "Ya tengo cuenta"
+    Usuario->SignIn.jsx:onClick "Ya tengo cuenta"
+    SignIn.jsx->react:setCurrentView("login")
+SignIn.jsx<--react:return
+    == ir a index inicia ==
+    
+else Usuario hace click en "Volver al menú"
+    Usuario->SignIn.jsx:onClick "Volver al menú"
+    SignIn.jsx->react:setCurrentView("menu")
+    SignIn.jsx<--react:return
+    ==ir a index inicia==
+end

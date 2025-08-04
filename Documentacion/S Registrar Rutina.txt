@@ -1,0 +1,103 @@
+title Registro de Entrenamiento
+
+actor Usuario
+
+participant MenuPrincipal
+participant ViewRenderer
+participant RegistroRutina
+participant CalculoDinamico
+participant React
+participant Firestore
+participant ResumenEntrenamiento
+
+
+
+RegistroRutina->React:useState([])
+React-->RegistroRutina:[rutinas, setRutinas]
+
+RegistroRutina->React:useState(null)
+React-->RegistroRutina:[rutinaSeleccionada, setRutinaSeleccionada]
+
+RegistroRutina->React:useState(1)
+React-->RegistroRutina:[currentStep, setCurrentStep]
+
+RegistroRutina->React:useState([])
+React-->RegistroRutina:[ejerciciosRealizados, setEjerciciosRealizados]
+
+RegistroRutina->React:useState(true)
+React-->RegistroRutina:[loading, setLoading]
+
+RegistroRutina->React:useEffect(() => obtenerRutinas(), [])
+React->RegistroRutina:obtenerRutinas()
+
+RegistroRutina->Firestore:getDocs(collection(db, "rutinas"))
+Firestore-->RegistroRutina:rutinasSnapshot
+RegistroRutina->React:setRutinas(rutinasList)
+RegistroRutina<--React:return
+RegistroRutina->React:setLoading(false)
+RegistroRutina<--React:return
+
+RegistroRutina-->Usuario:Muestra selector de rutinas
+
+alt No hay rutinas
+    RegistroRutina-->Usuario:Muestra estado vacío:\n"No hay rutinas disponibles"
+    Usuario->RegistroRutina:Click "Crear Rutina"
+    RegistroRutina->React:setCurrentView("menuRutina")
+RegistroRutina<--React:return
+==ir index inicia==
+else Hay rutinas disponibles
+    Usuario->RegistroRutina:Selecciona "Rutina Pecho" del dropdown
+    RegistroRutina->RegistroRutina:handleRutinaSeleccionada(rutinaId)
+    
+    alt Rutina tiene ejercicios
+        RegistroRutina->RegistroRutina:setRutinaSeleccionada(rutina)
+        
+        RegistroRutina->CalculoDinamico:<CalculoDinamico \n  rutinaSeleccionada={rutina}\n  setCurrentStep={setCurrentStep} />
+        
+        
+        CalculoDinamico->Firestore:Para cada ejercicio:\ngetDoc(ejercicios/id)\ngetDocs(entrenamientos)
+        Firestore-->CalculoDinamico:Datos ejercicio + historial
+        
+        CalculoDinamico->CalculoDinamico:Calcula objetivos:\n- pesoSugerido = anterior × 1.02\n- volumenObjetivo = anterior × 1.05\n- repeticionesSugeridas
+        
+        
+        CalculoDinamico-->Usuario:Muestra:\n- Ejercicio 1 de N\n- Peso sugerido\n- Progreso volumen\n- Input repeticiones
+        loop Ejercicio 
+            Usuario->CalculoDinamico:Ingresa repeticiones "10"
+            CalculoDinamico->React:setRepeticionesActuales(10)
+            
+CalculoDinamico<--React:return
+            Usuario->CalculoDinamico:Click "Registrar Set #"
+            CalculoDinamico->CalculoDinamico:handleRegistrarSet(#)
+            
+            alt Volumen objetivo alcanzado
+                CalculoDinamico->Firestore:addDoc(\n  entrenamientos,\n  {\n    fecha: new Date().toISOString(),\n    pesoUtilizado: 81.6,\n    repeticionesAlcanzadas: 10,\n    setsRealizados: 4,\n    volumenAlcanzado: 3264,\n    objetivoAlcanzado: true\n  }\n)
+                Firestore-->CalculoDinamico:success
+                
+                CalculoDinamico->CalculoDinamico:Siguiente ejercicio
+                ==ir  a ejercicio  ==
+            else Necesita más sets
+                CalculoDinamico->CalculoDinamico:contadorSets++
+                CalculoDinamico-->Usuario:Muestra "Set # + 1"
+                == ir a ejercicio ==
+            end
+        end
+        
+Usuario->RegistroRutina:Click en "Siguiente"  And no hay mas ejercicios
+        RegistroRutina->ResumenEntrenamiento:<ResumenEntrenamiento \n  ejerciciosRealizados={ejercicios}\n  rutinaSeleccionada={rutina} />
+        
+        ResumenEntrenamiento->ResumenEntrenamiento:calcularEstadisticas()
+        ResumenEntrenamiento->ResumenEntrenamiento:obtenerMensajeMotivacional(90%)
+        
+        ResumenEntrenamiento->Usuario:Muestra el resumen del entrenamiento
+        
+        Usuario->ResumenEntrenamiento:Click "Finalizar Entrenamiento"
+        ResumenEntrenamiento-->Usuario:Alert "¡Entrenamiento registrado!"
+        ResumenEntrenamiento->React:setCurrentView("menuPrincipal")
+        
+ViewRenderer<--React:return
+    else Rutina sin ejercicios
+        RegistroRutina-->Usuario:Alert "Esta rutina no tiene ejercicios"
+    end
+end
+

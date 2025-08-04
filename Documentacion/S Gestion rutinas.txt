@@ -1,0 +1,168 @@
+-title Gestión de Rutinas 
+actor Usuario
+
+participant MenuPrincipal
+participant ViewRenderer
+participant MenuRutina
+participant React
+participant Firestore
+participant ComponenteCarga
+
+Usuario->MenuPrincipal:Click "Gestionar Rutinas"
+MenuPrincipal->ViewRenderer:setCurrentView("menuRutina")
+ViewRenderer->MenuRutina:<MenuRutina setCurrentView={setCurrentView} />
+
+note over MenuRutina: Inicialización de estados
+
+MenuRutina->React:useState([])
+React-->MenuRutina:[rutinas, setRutinas]
+
+MenuRutina->React:useState("")
+React-->MenuRutina:[rutinaId, setRutinaId]
+
+MenuRutina->React:useState("")
+React-->MenuRutina:[nombreRutina, setNombreRutina]
+
+MenuRutina->React:useState([])
+React-->MenuRutina:[ejercicios, setEjercicios]
+
+MenuRutina->React:useState([])
+React-->MenuRutina:[ejerciciosRutina, setEjerciciosRutina]
+
+MenuRutina->React:useState(true)
+React-->MenuRutina:[loading, setLoading]
+
+MenuRutina->React:useState(false)
+React-->MenuRutina:[saving, setSaving]
+
+MenuRutina->React:useState(false)
+React-->MenuRutina:[modoEdicion, setModoEdicion]
+
+MenuRutina->React:useEffect(() => fetchData(), [])
+React->MenuRutina:fetchData()
+
+MenuRutina->ComponenteCarga:<CargaDatos tipo="rutinas" />
+
+ComponenteCarga-->Usuario:Muestra "Cargando rutinas..."
+MenuRutina->Firestore:getDocs(collection(db, "rutinas"))
+Firestore-->MenuRutina:rutinasSnapshot
+
+MenuRutina->Firestore:getDocs(collection(db, "ejercicios"))
+Firestore-->MenuRutina:ejerciciosSnapshot
+
+MenuRutina->React:Actualiza rutinas
+
+MenuRutina<--React:return 
+alt Si hay rutinas existentes
+    MenuRutina->MenuRutina:Selecciona primera rutina
+    MenuRutina->React:cargarEjerciciosRutina(rutina, ejerciciosList)
+MenuRutina<--React:return
+else No hay rutinas
+    MenuRutina->React:setEjercicios(ejerciciosList)
+MenuRutina<-React:return
+end
+
+MenuRutina->React:Setloading(false)
+MenuRutina<-React:jsx
+MenuRutina-->Usuario:Muestra interfaz completa
+
+alt Crear nueva rutina
+    Usuario->MenuRutina:Click "Nueva Rutina"
+Usuario->MenuRutina:Ingresa "nombre de rutina
+Usuario->MenuRutina:Click Crear rutina
+    MenuRutina->MenuRutina:prompt("Nombre de rutina")
+    MenuRutina-->Usuario:Muestra la rutina
+    Usuario->MenuRutina:Ingresa "Rutina Pecho"
+    
+    MenuRutina->React:setSaving(true)
+    
+MenuRutina<--React:return
+    MenuRutina->Firestore:setDoc(\n  doc(db, "rutinas", nuevoId),\n  {\n    nombre: "Rutina Pecho",\n    ejercicios: [],\n    fechaCreacion: new Date().toISOString()\n  }\n)
+    Firestore-->MenuRutina:success
+    
+    MenuRutina->MenuRutina:Actualiza estados locales
+    MenuRutina->React:Re-render con nueva rutina
+MenuRutina<--React:return
+    MenuRutina-->Usuario:Alert "Rutina creada con éxito"
+    
+    MenuRutina->MenuRutina:setSaving(false)
+end
+
+alt Agregar ejercicio a rutina
+    Usuario->MenuRutina:Click "+" en ejercicio disponible
+    MenuRutina->MenuRutina:agregarEjercicio(ejercicio)
+    MenuRutina->MenuRutina:Mueve ejercicio de disponibles a rutina
+    MenuRutina->React:SetRutina\n
+MenuRutina<--React:return
+MenuRutina->React:SetRutinaId
+MenuRutina<--React:return
+MenuRutina->React:setNombreRutina
+MenuRutina<--React:return
+MenuRutina->React: setEjercicios
+MenuRutina<--React:return
+MenuRutina->React: setEjerciciosRutina
+MenuRutina<--React:return
+    MenuRutina-->Usuario:Ejercicio aparece en panel derecho
+end
+
+alt Quitar ejercicio de rutina
+    Usuario->MenuRutina:Click "-" en ejercicio de rutina
+    MenuRutina->MenuRutina:Mueve ejercicio de rutina a disponibles
+    MenuRutina->React:SetRutinaId
+MenuRutina<--React:return
+MenuRutina->React:setNombreRutina
+MenuRutina<--React:return
+MenuRutina->React: setEjerciciosRutina
+MenuRutina<--React:return
+    MenuRutina-->Usuario:Ejercicio vuelve a disponibles
+end
+
+alt Guardar cambios
+    Usuario->MenuRutina:Modifica nombre rutina
+    MenuRutina->React:setNombreRutina(nuevoNombre)
+    MenuRutina->React: setEjerciciosRutina
+MenuRutina<--React:return
+    MenuRutina->React:setModoEdicion(true)
+    MenuRutina->React: setEjerciciosRutina
+MenuRutina<--React:return
+    
+    Usuario->MenuRutina:Click "Guardar Cambios"
+    MenuRutina->MenuRutina:guardarRutina()
+    
+    MenuRutina->React:setSaving(true)
+    MenuRutina->React: setEjerciciosRutina
+MenuRutina<--React:return
+    MenuRutina->Firestore:setDoc(\n  doc(db, "rutinas", rutinaId),\n  {\n    nombre: nombreRutina,\n    ejercicios: [...ejerciciosIds],\n    fechaActualizacion: new Date().toISOString()\n  },\n  { merge: true }\n)
+    Firestore-->MenuRutina:success
+    
+    MenuRutina->React:setModoEdicion(false)
+    MenuRutina->React: setEjerciciosRutina
+MenuRutina<--React:return
+    MenuRutina->React:setSaving(false)
+    MenuRutina->React: setEjerciciosRutina
+MenuRutina<--React:return
+    MenuRutina-->Usuario:Alert "Rutina guardada con éxito"
+end
+
+alt Eliminar rutina
+    Usuario->MenuRutina:Click "Eliminar Rutina"
+    MenuRutina->Usuario:confirm("¿Estás seguro?")
+   Usuario->MenuRutina:Click "Eliminar"
+    MenuRutina-->Usuario:Muestra confirmación
+    
+    Usuario->MenuRutina:Confirma eliminación
+    
+    MenuRutina->React:setSaving(true)
+    MenuRutina<--React:return
+    MenuRutina->Firestore:deleteDoc(doc(db, "rutinas", rutinaId))
+    Firestore-->MenuRutina:success
+    
+    MenuRutina->MenuRutina:Actualiza estados locales
+    MenuRutina->MenuRutina:fetchData()
+    MenuRutina-->Usuario:Alert "Rutina eliminada con éxito"
+end
+
+Usuario->MenuRutina:Click "Registrar Ejercicio"
+MenuRutina->React:setCurrentView("registrarEjercicio")
+==ir a index inicia==
+

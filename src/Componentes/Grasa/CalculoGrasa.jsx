@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
+import { 
+  calcularPorcentajeGrasa, 
+  interpretarPorcentajeGrasa,
+  RANGOS_GRASA_CORPORAL 
+} from "../../utils/fitnessUtils";
 
 const CalculoGrasa = ({ setCurrentView }) => {
   const [userData, setUserData] = useState(null);
@@ -18,7 +23,9 @@ const CalculoGrasa = ({ setCurrentView }) => {
           if (userDoc.exists()) {
             const data = userDoc.data();
             setUserData(data);
-            calcularPorcentajeGrasa(data);
+            // Usar función de utils
+            const porcentaje = calcularPorcentajeGrasa(data);
+            setPorcentajeGrasa(porcentaje.toFixed(1));
           }
         }
       } catch (error) {
@@ -31,69 +38,37 @@ const CalculoGrasa = ({ setCurrentView }) => {
     cargarDatosUsuario();
   }, []);
 
-  const calcularPorcentajeGrasa = (datos) => {
-    const { sexo, cintura, cuello, cuadriceps, peso } = datos;
-    let altura = datos.altura || 170; // valor por defecto si no existe
-    
-    // Convertir a centímetros si está en metros
-    if (altura < 3) {
-      altura = altura * 100;
-    }
-
-    let porcentaje = 0;
-
-    if (sexo === "Masculino") {
-      // Fórmula para hombres: 86.010 × log10(cintura - cuello) - 70.041 × log10(altura) + 36.76
-      porcentaje = 86.010 * Math.log10(cintura - cuello) - 70.041 * Math.log10(altura) + 36.76;
-    } else if (sexo === "Femenino") {
-      // Fórmula para mujeres: 163.205×log10(cintura+cadera−cuello)−97.684×log10(altura)−78.387
-      // Usamos cuádriceps como aproximación de cadera
-      porcentaje = 163.205 * Math.log10(cintura + cuadriceps - cuello) - 97.684 * Math.log10(altura) - 78.387;
-    }
-
-    // Asegurar que el porcentaje esté en un rango válido
-    porcentaje = Math.max(2, Math.min(50, porcentaje));
-    setPorcentajeGrasa(porcentaje.toFixed(1));
-  };
-
-  const interpretarPorcentaje = (porcentaje, sexo) => {
-    const valor = parseFloat(porcentaje);
-    
-    if (sexo === "Masculino") {
-      if (valor < 6) return { categoria: "Esencial", color: "#e74c3c" };
-      if (valor < 14) return { categoria: "Atlético", color: "#27ae60" };
-      if (valor < 18) return { categoria: "Fitness", color: "#f39c12" };
-      if (valor < 25) return { categoria: "Promedio", color: "#3498db" };
-      return { categoria: "Obeso", color: "#e74c3c" };
-    } else {
-      if (valor < 14) return { categoria: "Esencial", color: "#e74c3c" };
-      if (valor < 21) return { categoria: "Atlético", color: "#27ae60" };
-      if (valor < 25) return { categoria: "Fitness", color: "#f39c12" };
-      if (valor < 32) return { categoria: "Promedio", color: "#3498db" };
-      return { categoria: "Obeso", color: "#e74c3c" };
-    }
-  };
-
   if (loading) {
-    return <div>Cargando datos...</div>;
+    return <div className="loading">Cargando datos...</div>;
   }
 
   if (!userData) {
     return (
-      <div>
+      <div style={{ padding: "20px", textAlign: "center" }}>
         <h2>Cálculo de Porcentaje de Grasa</h2>
         <p>No se encontraron datos del usuario. Por favor, complete primero el formulario de datos.</p>
-        <button onClick={() => setCurrentView("formularioDatos")}>
+        <button 
+          onClick={() => setCurrentView("formularioDatos")}
+          className="btn btn-primario"
+        >
           Ir a Formulario de Datos
         </button>
-        <button onClick={() => setCurrentView("menuPrincipal")}>
+        <button 
+          onClick={() => setCurrentView("menuPrincipal")}
+          className="btn btn-secundario"
+        >
           Regresar al Menú
         </button>
       </div>
     );
   }
 
-  const interpretacion = porcentajeGrasa ? interpretarPorcentaje(porcentajeGrasa, userData.sexo) : null;
+  const interpretacion = porcentajeGrasa ? 
+    interpretarPorcentajeGrasa(porcentajeGrasa, userData.sexo) : null;
+
+  const rangos = userData.sexo === "Masculino" ? 
+    RANGOS_GRASA_CORPORAL.masculino : 
+    RANGOS_GRASA_CORPORAL.femenino;
 
   return (
     <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
@@ -111,7 +86,7 @@ const CalculoGrasa = ({ setCurrentView }) => {
         </div>
       </div>
 
-      {porcentajeGrasa && (
+      {porcentajeGrasa && interpretacion && (
         <div style={{ 
           backgroundColor: interpretacion.color, 
           color: "white", 
@@ -127,6 +102,9 @@ const CalculoGrasa = ({ setCurrentView }) => {
           <p style={{ fontSize: "18px", margin: "0" }}>
             Categoría: {interpretacion.categoria}
           </p>
+          <p style={{ fontSize: "14px", margin: "5px 0 0 0", opacity: 0.9 }}>
+            {interpretacion.descripcion}
+          </p>
         </div>
       )}
 
@@ -138,29 +116,14 @@ const CalculoGrasa = ({ setCurrentView }) => {
           Es un método ampliamente reconocido y utilizado por organizaciones militares y de fitness.
         </p>
         
-        <h4>Rangos de referencia:</h4>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-          <div>
-            <strong>Hombres:</strong>
-            <ul>
-              <li>Grasa esencial: 2-5%</li>
-              <li>Atlético: 6-13%</li>
-              <li>Fitness: 14-17%</li>
-              <li>Promedio: 18-24%</li>
-              <li>Obeso: 25%+</li>
-            </ul>
-          </div>
-          <div>
-            <strong>Mujeres:</strong>
-            <ul>
-              <li>Grasa esencial: 10-13%</li>
-              <li>Atlético: 14-20%</li>
-              <li>Fitness: 21-24%</li>
-              <li>Promedio: 25-31%</li>
-              <li>Obeso: 32%+</li>
-            </ul>
-          </div>
-        </div>
+        <h4>Rangos de referencia para {userData.sexo}:</h4>
+        <ul>
+          <li>Grasa esencial: {rangos.esencial.min}-{rangos.esencial.max}%</li>
+          <li>Atlético: {rangos.atletico.min}-{rangos.atletico.max}%</li>
+          <li>Fitness: {rangos.fitness.min}-{rangos.fitness.max}%</li>
+          <li>Promedio: {rangos.promedio.min}-{rangos.promedio.max}%</li>
+          <li>Obeso: {rangos.obeso.min}%+</li>
+        </ul>
       </div>
 
       <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -178,7 +141,7 @@ const CalculoGrasa = ({ setCurrentView }) => {
           Ver Historial
         </button>
         <button 
-          onClick={() => setCurrentView("formularioDatos")}
+          onClick={() => setCurrentView("actualizarDatos")}
           style={{
             padding: "12px 24px",
             backgroundColor: "#28a745",

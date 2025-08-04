@@ -1,0 +1,76 @@
+title Cálculo de Porcentaje de Grasa 
+
+actor Usuario
+
+participant MenuPrincipal
+participant ViewRenderer
+participant CalculoGrasa
+participant React
+participant Firestore
+
+Usuario->MenuPrincipal:Click "% de Grasa Corporal"
+MenuPrincipal->React:setCurrentView("grasa")
+ViewRenderer<--React:return
+ViewRenderer->CalculoGrasa:<CalculoGrasa setCurrentView={setCurrentView} />
+
+
+CalculoGrasa->React:useState(null)
+React-->CalculoGrasa:[userData, setUserData]
+
+CalculoGrasa->React:useState(null)
+React-->CalculoGrasa:[porcentajeGrasa, setPorcentajeGrasa]
+
+CalculoGrasa->React:useState(true)
+React-->CalculoGrasa:[loading, setLoading]
+
+CalculoGrasa->React:useEffect(() => cargarDatosUsuario(), [])
+React->CalculoGrasa:cargarDatosUsuario()
+
+CalculoGrasa->Firestore:getDoc(doc(db, "usuarios", currentUser.uid))
+Firestore-->CalculoGrasa:userDoc
+
+alt Usuario tiene datos
+    CalculoGrasa->CalculoGrasa:setUserData(data)
+    CalculoGrasa->CalculoGrasa:calcularPorcentajeGrasa(data)
+    
+    
+    CalculoGrasa->CalculoGrasa:setPorcentajeGrasa(15.3)
+    CalculoGrasa->CalculoGrasa:interpretarPorcentaje(15.3, "Masculino")
+    note right of CalculoGrasa: Estos datos son ejemplos de los datos que se meten a las funciones
+    
+    CalculoGrasa->React:setLoading(false)
+    CalculoGrasa<--React:return
+    ==ir a index inicia==
+    
+    React-->Usuario:Muestra:\n- Datos utilizados\n- 15.3% en color naranja\n- Categoría: Fitness\n- Método utilizado\n- Rangos referencia
+    
+    alt Usuario quiere ver historial
+        Usuario->CalculoGrasa:Click "Ver Historial"
+        CalculoGrasa->React:setCurrentView("historial")
+CalculoGrasa<--React:return
+        ==ir a index inicia==
+    end
+    
+    alt Usuario quiere actualizar
+        Usuario->CalculoGrasa:Click "Actualizar Datos"
+        CalculoGrasa->React:setCurrentView("formularioDatos")
+        CalculoGrasa<--React:return
+        ==ir a index inicia==
+    end
+    
+else Usuario sin datos
+    CalculoGrasa->React:setLoading(false)
+    React-->CalculoGrasa:return
+    CalculoGrasa-->Usuario:Muestra:\n"No se encontraron datos.\nComplete primero el formulario"
+    
+    Usuario->CalculoGrasa:Click "Ir a Formulario de Datos"
+    CalculoGrasa->React:setCurrentView("formularioDatos")
+      CalculoGrasa<--React:return
+    ==ir a index inicia==
+    
+end
+
+Usuario->CalculoGrasa:Click "Regresar"
+CalculoGrasa->React:setCurrentView("menuPrincipal")
+  CalculoGrasa<--React:return
+    ==ir a index inicia==

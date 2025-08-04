@@ -1,0 +1,54 @@
+title IU 6 Menu Principal
+
+actor Usuario
+participant index.js
+participant App.js
+participant ViewRenderer.jsx
+participant MenuPrincipal.jsx
+participant react
+
+App.js->ViewRenderer.jsx:<ViewRenderer\n  currentView={"menuPrincipal"}\n  setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
+ViewRenderer.jsx->MenuPrincipal.jsx:<MenuPrincipal {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />
+ViewRenderer.jsx<--MenuPrincipal.jsx:jsx
+App.js<--ViewRenderer.jsx:jsx
+index.js<--App.js:jsx
+Usuario<-index.js:IU 6 Menu Principal
+
+alt click Gestionar Rutinas
+    Usuario->MenuPrincipal.jsx:click Gestionar Rutinas
+    MenuPrincipal.jsx->react:setCurrentView("menuRutina")
+    index.js<-react:render
+    == ir a index inicia ==
+    
+else click Entrenar
+    Usuario->MenuPrincipal.jsx:click Entrenar
+    MenuPrincipal.jsx->react:setCurrentView("registrarRutina")
+    index.js<-react:render
+    == ir a index inicia ==
+    
+else click % de Grasa Corporal
+    Usuario->MenuPrincipal.jsx:click % de Grasa Corporal
+    MenuPrincipal.jsx->react:setCurrentView("grasa")
+    index.js<-react:render
+    == ir a index inicia ==
+    
+else click Historial
+    Usuario->MenuPrincipal.jsx:click Historial
+    MenuPrincipal.jsx->react:setCurrentView("historial")
+    index.js<-react:render
+    == ir a index inicia ==
+    
+else click Actualizar Datos
+    Usuario->MenuPrincipal.jsx:click Actualizar Datos
+    MenuPrincipal.jsx->react:setCurrentView("actualizarDatos")
+    index.js<-react:render
+    == ir a index inicia ==
+    
+else click Salir
+    Usuario->MenuPrincipal.jsx:click Salir
+    MenuPrincipal.jsx->App.js:handleSignOut()
+    App.js->Firebase Auth:auth.signOut()
+    Firebase Auth-->App.js:success
+    note over App.js: onAuthStateChanged se dispara
+    == ir a index inicia ==
+end

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase-config";
 import { doc, collection, addDoc, setDoc, getDoc } from "firebase/firestore";
+import "../../global.css";
 //import "./formularioDatos.css";
 
 // Hook personalizado para manejar los datos del formulario

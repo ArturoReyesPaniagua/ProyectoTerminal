@@ -1,0 +1,50 @@
+title IU 4 Formulario Datos Primera Vez
+
+actor Usuario
+participant index.js
+participant App.js
+participant ViewRenderer.jsx
+participant FormularioDatos.jsx
+participant Firestore
+participant react
+
+App.js->ViewRenderer.jsx:<ViewRenderer\n  currentView={"formularioDatos"}\n  setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
+ViewRenderer.jsx->FormularioDatos.jsx:<FormularioDatos {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n    mode="create"\n  } />
+ViewRenderer.jsx<--FormularioDatos.jsx:jsx
+App.js<--ViewRenderer.jsx:jsx
+index.js<--App.js:jsx
+Usuario<-index.js:IU 4 Formulario Datos
+
+Usuario->FormularioDatos.jsx:Selecciona sexo
+FormularioDatos.jsx->react:updateField("sexo", value)
+FormularioDatos.jsx<--react:return
+Usuario->FormularioDatos.jsx:Ingresa edad
+FormularioDatos.jsx->react:updateField("edad", value)
+FormularioDatos.jsx<--react:return
+Usuario->FormularioDatos.jsx:Ingresa peso
+FormularioDatos.jsx->react:updateField("peso", value)
+FormularioDatos.jsx<--react:return
+Usuario->FormularioDatos.jsx:Ingresa medidas corporales
+FormularioDatos.jsx->react:updateField(field, value)
+FormularioDatos.jsx<--react:return
+
+alt click Establecer datos
+    Usuario->FormularioDatos.jsx:click Establecer datos
+    
+    alt validación exitosa
+        FormularioDatos.jsx->Firestore:setDoc(userDocRef, {\n  ...formData,\n  datosCompletos: true,\n  fechaRegistro\n}, {merge: true})
+        Firestore-->FormularioDatos.jsx:success
+        FormularioDatos.jsx->react:setCurrentView("menuPrincipal")
+        == ir a index inicia ==
+    else error validación
+        FormularioDatos.jsx->react:setError(errorMessage)
+        Usuario<--react:Mensaje de error
+    end
+    else Salir 
+    
+Usuario->FormularioDatos.jsx:Click en salir
+  FormularioDatos.jsx->react:setCurrentView("menuPrincipal")
+FormularioDatos.jsx<--react:return
+  == ir a index inicia ==
+
+end
