@@ -4,7 +4,6 @@ import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { 
   calcularPorcentajeGrasa, 
-  formatearFecha 
 } from "../../utils/fitnessUtils";
 
 const Historial = ({ setCurrentView }) => {
