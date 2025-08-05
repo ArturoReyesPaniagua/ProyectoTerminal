@@ -183,32 +183,43 @@ const MenuRutina = ({ setCurrentView }) => {
     }
   };
 
-  const cambiarRutina = async (id) => {
-    const rutinaSeleccionada = rutinas.find((rutina) => rutina.id === id);
-    if (rutinaSeleccionada) {
-      setRutinaId(rutinaSeleccionada.id);
-      setNombreRutina(rutinaSeleccionada.nombre);
-      
-      // Recargar ejercicios para esta rutina
-      const ejerciciosSnapshot = await getDocs(collection(db, "ejercicios"));
-      const todosLosEjercicios = ejerciciosSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      
-      cargarEjerciciosRutina(rutinaSeleccionada, todosLosEjercicios);
-    }
-  };
 
-  const agregarEjercicio = (ejercicio) => {
-    setEjerciciosRutina([...ejerciciosRutina, ejercicio]);
-    setEjercicios(ejercicios.filter((ej) => ej.id !== ejercicio.id));
-  };
 
-  const quitarEjercicio = (ejercicio) => {
-    setEjercicios([...ejercicios, ejercicio]);
-    setEjerciciosRutina(ejerciciosRutina.filter((ej) => ej.id !== ejercicio.id));
-  };
+
+
+
+//la función cambiarRutina para resetear el modo edición
+const cambiarRutina = async (id) => {
+  const rutinaSeleccionada = rutinas.find((rutina) => rutina.id === id);
+  if (rutinaSeleccionada) {
+    setRutinaId(rutinaSeleccionada.id);
+    setNombreRutina(rutinaSeleccionada.nombre);
+    setModoEdicion(false); // ✅ Resetear modo edición
+    
+    // Recargar ejercicios para esta rutina
+    const ejerciciosSnapshot = await getDocs(collection(db, "ejercicios"));
+    const todosLosEjercicios = ejerciciosSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    
+    cargarEjerciciosRutina(rutinaSeleccionada, todosLosEjercicios);
+  }
+};
+
+
+ const agregarEjercicio = (ejercicio) => {
+  setEjerciciosRutina([...ejerciciosRutina, ejercicio]);
+  setEjercicios(ejercicios.filter((ej) => ej.id !== ejercicio.id));
+  setModoEdicion(true); // ✅ Activar modo edición
+};
+
+
+const quitarEjercicio = (ejercicio) => {
+  setEjercicios([...ejercicios, ejercicio]);
+  setEjerciciosRutina(ejerciciosRutina.filter((ej) => ej.id !== ejercicio.id));
+  setModoEdicion(true); // ✅ Activar modo edición
+};
 
   if (loading) {
     return <CargaDatos tipo="rutinas" />;
@@ -442,3 +453,8 @@ const MenuRutina = ({ setCurrentView }) => {
 };
 
 export default MenuRutina;
+
+
+
+
+

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { db } from "../../firebase-config";
 import { doc, collection, addDoc, setDoc, getDoc } from "firebase/firestore";
 import "../../global.css";
-//import "./formularioDatos.css";
 
 // Hook personalizado para manejar los datos del formulario
 const useFormularioDatos = (currentUser) => {
@@ -10,6 +9,7 @@ const useFormularioDatos = (currentUser) => {
     edad: "",
     sexo: "",
     peso: "",
+    altura: "", // ✅ Agregar altura faltante
     biceps: "",
     pecho: "",
     cintura: "",
@@ -35,6 +35,7 @@ const useFormularioDatos = (currentUser) => {
             edad: data.edad || "",
             sexo: data.sexo || "",
             peso: data.peso || "",
+            altura: data.altura || "", // ✅ Cargar altura
             biceps: data.biceps || "",
             pecho: data.pecho || "",
             cintura: data.cintura || "",
@@ -62,7 +63,19 @@ const useFormularioDatos = (currentUser) => {
     const missingFields = requiredFields.filter(field => !formData[field]);
     
     if (missingFields.length > 0) {
+      //setError(Campos requeridos: ${missingFields.join(', ')});
       setError(`Campos requeridos: ${missingFields.join(', ')}`);
+      return false;
+    }
+
+    // ✅ Validaciones adicionales
+    if (parseInt(formData.edad) < 10 || parseInt(formData.edad) > 100) {
+      setError("La edad debe estar entre 10 y 100 años");
+      return false;
+    }
+
+    if (parseFloat(formData.peso) < 30 || parseFloat(formData.peso) > 300) {
+      setError("El peso debe estar entre 30 y 300 kg");
       return false;
     }
     
@@ -80,30 +93,44 @@ const useFormularioDatos = (currentUser) => {
     try {
       setLoading(true);
       const userDocRef = doc(db, "usuarios", currentUser.uid);
-      const fechaRegistro = new Date().toISOString();
+      const fecha = new Date().toISOString(); // ✅ Usar nombre consistente
 
       // Datos a guardar
       const dataToSave = {
         ...formData,
-        fechaRegistro,
+        // Convertir a números
+        edad: parseInt(formData.edad),
+        peso: parseFloat(formData.peso),
+        altura: parseFloat(formData.altura) || 170,
+        biceps: parseFloat(formData.biceps) || 0,
+        pecho: parseFloat(formData.pecho) || 0,
+        cintura: parseFloat(formData.cintura),
+        cuello: parseFloat(formData.cuello),
+        cuadriceps: parseFloat(formData.cuadriceps) || 0,
+        fechaRegistro: fecha,
         datosCompletos: true,
       };
 
       // Actualizar documento principal
       await setDoc(userDocRef, dataToSave, { merge: true });
 
-      // Guardar en historial si no es la primera vez
+      // ✅ SIEMPRE guardar en historial (excepto la primera vez)
       if (!isFirstTime) {
-        const historialRef = collection(db, "usuarios", currentUser.uid, "historialProgreso");
+        const historialRef = collection(db, "usuarios", currentUser.uid, "historial"); // ✅ Nombre consistente
         await addDoc(historialRef, {
-          ...formData,
-          fechaRegistro,
+          ...dataToSave,
+          fecha: fecha, // ✅ Campo 'fecha' para historial
+          tipoRegistro: "actualizacion"
         });
+        
+        console.log("✅ Datos guardados en historial correctamente");
+      } else {
+        console.log("✅ Primera vez - no se guarda en historial");
       }
 
       return true;
     } catch (err) {
-      console.error("Error al guardar datos:", err);
+      console.error("❌ Error al guardar datos:", err);
       setError("Error al guardar los datos. Intenta de nuevo.");
       return false;
     } finally {
@@ -138,7 +165,7 @@ const FormularioDatos = ({ setCurrentView, currentUser, mode = "create" }) => {
     if (success) {
       const message = isFirstTime ? 
         "Datos establecidos con éxito" : 
-        "Datos actualizados con éxito";
+        "Datos actualizados con éxito y guardados en historial";
       
       alert(message);
       setCurrentView("menuPrincipal");
@@ -148,6 +175,7 @@ const FormularioDatos = ({ setCurrentView, currentUser, mode = "create" }) => {
   const inputFields = [
     { key: "edad", label: "Edad", type: "number", required: true },
     { key: "peso", label: "Peso (kg)", type: "number", required: true },
+    { key: "altura", label: "Altura (cm)", type: "number", required: false }, // ✅ Agregar altura
     { key: "biceps", label: "Circunferencia bíceps (cm)", type: "number" },
     { key: "pecho", label: "Circunferencia pecho (cm)", type: "number" },
     { key: "cintura", label: "Circunferencia cintura (cm)", type: "number", required: true },
@@ -192,7 +220,8 @@ const FormularioDatos = ({ setCurrentView, currentUser, mode = "create" }) => {
           <input
             key={key}
             type={type}
-            placeholder={`${label}${required ? " *" : ""}`}
+            //placeholder={${label}${required ? " *" : ""}}
+            placeholder={label}
             value={formData[key]}
             onChange={(e) => updateField(key, e.target.value)}
             className="formulario-datos-input"

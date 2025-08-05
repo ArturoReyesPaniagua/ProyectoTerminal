@@ -13,7 +13,7 @@ import RegistrarEjercicio from "./Rutina/RegistrarEjercicio";
 import RegistroRutina from "./RegistroRutina/RegistroRutina";
 import CalculoGrasa from "./Grasa/CalculoGrasa";
 import Historial from "./Historial/Historial";
-import GraficosProgreso from "./Graficos/GraficosProgreso";
+//import GraficosProgreso from "./Graficos/GraficosProgreso";
 
 // Mapa de vistas
 const VIEWS = {
@@ -30,7 +30,7 @@ const VIEWS = {
   registrarRutina: RegistroRutina,
   grasa: CalculoGrasa,
   historial: Historial,
-  graficos: GraficosProgreso,
+  //graficos: GraficosProgreso,
 };
 
 const ViewRenderer = ({ 

@@ -126,3 +126,8 @@ const MenuPrincipal = ({ setCurrentView, currentUser, handleSignOut, error }) =>
 };
 
 export default MenuPrincipal;
+
+
+
+
+
