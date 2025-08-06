@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../../firebase-config";
+import { auth, db } from "../../firebase-config";
 import { collection, doc, getDocs, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { CargaDatos, EstadoVacio } from "../Comunes/ComponenteCarga";
 
@@ -20,17 +20,24 @@ const MenuRutina = ({ setCurrentView }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      const user = auth.currentUser;
+      if (!user) {
+        console.error("Usuario no autenticado");
+        return;
+      }
       
-      // Obtener todas las rutinas
-      const rutinasSnapshot = await getDocs(collection(db, "rutinas"));
+      // ✅ CORREGIDO: Obtener rutinas del usuario específico
+      const rutinasRef = collection(db, "usuarios", user.uid, "rutinas");
+      const rutinasSnapshot = await getDocs(rutinasRef);
       const rutinasList = rutinasSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setRutinas(rutinasList);
 
-      // Obtener todos los ejercicios
-      const ejerciciosSnapshot = await getDocs(collection(db, "ejercicios"));
+      // ✅ CORREGIDO: Obtener ejercicios del usuario específico
+      const ejerciciosRef = collection(db, "usuarios", user.uid, "ejercicios");
+      const ejerciciosSnapshot = await getDocs(ejerciciosRef);
       const ejerciciosList = ejerciciosSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -79,14 +86,26 @@ const MenuRutina = ({ setCurrentView }) => {
 
     setSaving(true);
     try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Usuario no autenticado");
+        return;
+      }
+
       const nuevoId = `rutina_${Date.now()}`;
       const nuevaRutina = {
         nombre: nombre.trim(),
         ejercicios: [],
-        fechaCreacion: new Date().toISOString()
+        fechaCreacion: new Date().toISOString(),
+        descripcion: "",
+        activa: true,
+        diasSemana: [],
+        duracionEstimada: 60
       };
 
-      await setDoc(doc(db, "rutinas", nuevoId), nuevaRutina);
+      // ✅ CORREGIDO: Guardar en rutinas del usuario específico
+      const rutinaRef = doc(db, "usuarios", user.uid, "rutinas", nuevoId);
+      await setDoc(rutinaRef, nuevaRutina);
       
       // Actualizar estado local
       const nuevaRutinaCompleta = { id: nuevoId, ...nuevaRutina };
@@ -96,7 +115,8 @@ const MenuRutina = ({ setCurrentView }) => {
       setEjerciciosRutina([]);
       
       // Recargar ejercicios disponibles
-      const ejerciciosSnapshot = await getDocs(collection(db, "ejercicios"));
+      const ejerciciosRef = collection(db, "usuarios", user.uid, "ejercicios");
+      const ejerciciosSnapshot = await getDocs(ejerciciosRef);
       const ejerciciosList = ejerciciosSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -123,7 +143,12 @@ const MenuRutina = ({ setCurrentView }) => {
 
     setSaving(true);
     try {
-      await deleteDoc(doc(db, "rutinas", rutinaId));
+      const user = auth.currentUser;
+      if (!user) return;
+
+      // ✅ CORREGIDO: Eliminar rutina del usuario específico
+      const rutinaRef = doc(db, "usuarios", user.uid, "rutinas", rutinaId);
+      await deleteDoc(rutinaRef);
       
       // Actualizar estado local
       const rutinasActualizadas = rutinas.filter(r => r.id !== rutinaId);
@@ -158,13 +183,18 @@ const MenuRutina = ({ setCurrentView }) => {
 
     setSaving(true);
     try {
+      const user = auth.currentUser;
+      if (!user) return;
+
       const rutinaActualizada = {
         nombre: nombreRutina.trim(),
         ejercicios: ejerciciosRutina.map((ej) => ej.id),
         fechaActualizacion: new Date().toISOString()
       };
 
-      await setDoc(doc(db, "rutinas", rutinaId), rutinaActualizada, { merge: true });
+      // ✅ CORREGIDO: Actualizar rutina del usuario específico
+      const rutinaRef = doc(db, "usuarios", user.uid, "rutinas", rutinaId);
+      await setDoc(rutinaRef, rutinaActualizada, { merge: true });
       
       // Actualizar estado local
       setRutinas(rutinas.map(r => 
@@ -183,43 +213,38 @@ const MenuRutina = ({ setCurrentView }) => {
     }
   };
 
+  const cambiarRutina = async (id) => {
+    const rutinaSeleccionada = rutinas.find((rutina) => rutina.id === id);
+    if (rutinaSeleccionada) {
+      setRutinaId(rutinaSeleccionada.id);
+      setNombreRutina(rutinaSeleccionada.nombre);
+      
+      // Recargar ejercicios para esta rutina
+      const user = auth.currentUser;
+      if (!user) return;
 
+      const ejerciciosRef = collection(db, "usuarios", user.uid, "ejercicios");
+      const ejerciciosSnapshot = await getDocs(ejerciciosRef);
+      const todosLosEjercicios = ejerciciosSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      
+      cargarEjerciciosRutina(rutinaSeleccionada, todosLosEjercicios);
+    }
+  };
 
+  const agregarEjercicio = (ejercicio) => {
+    setEjerciciosRutina([...ejerciciosRutina, ejercicio]);
+    setEjercicios(ejercicios.filter((ej) => ej.id !== ejercicio.id));
+    setModoEdicion(true);
+  };
 
-
-
-//la función cambiarRutina para resetear el modo edición
-const cambiarRutina = async (id) => {
-  const rutinaSeleccionada = rutinas.find((rutina) => rutina.id === id);
-  if (rutinaSeleccionada) {
-    setRutinaId(rutinaSeleccionada.id);
-    setNombreRutina(rutinaSeleccionada.nombre);
-    setModoEdicion(false); // ✅ Resetear modo edición
-    
-    // Recargar ejercicios para esta rutina
-    const ejerciciosSnapshot = await getDocs(collection(db, "ejercicios"));
-    const todosLosEjercicios = ejerciciosSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    
-    cargarEjerciciosRutina(rutinaSeleccionada, todosLosEjercicios);
-  }
-};
-
-
- const agregarEjercicio = (ejercicio) => {
-  setEjerciciosRutina([...ejerciciosRutina, ejercicio]);
-  setEjercicios(ejercicios.filter((ej) => ej.id !== ejercicio.id));
-  setModoEdicion(true); // ✅ Activar modo edición
-};
-
-
-const quitarEjercicio = (ejercicio) => {
-  setEjercicios([...ejercicios, ejercicio]);
-  setEjerciciosRutina(ejerciciosRutina.filter((ej) => ej.id !== ejercicio.id));
-  setModoEdicion(true); // ✅ Activar modo edición
-};
+  const quitarEjercicio = (ejercicio) => {
+    setEjercicios([...ejercicios, ejercicio]);
+    setEjerciciosRutina(ejerciciosRutina.filter((ej) => ej.id !== ejercicio.id));
+    setModoEdicion(true);
+  };
 
   if (loading) {
     return <CargaDatos tipo="rutinas" />;
@@ -453,8 +478,3 @@ const quitarEjercicio = (ejercicio) => {
 };
 
 export default MenuRutina;
-
-
-
-
-

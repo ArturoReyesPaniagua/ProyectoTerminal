@@ -6,7 +6,7 @@ participant CalculoGrasa
 participant ViewRenderer
 participant Historial
 participant React
-participant Firestore
+participant Firestore 
 
 ViewRenderer->Historial:<Historial setCurrentView={setCurrentView} />
 

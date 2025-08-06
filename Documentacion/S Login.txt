@@ -1,4 +1,4 @@
-title IU 2 Login - Completo con React
+title IU 2 Login 
 
 actor Usuario
 participant index.js

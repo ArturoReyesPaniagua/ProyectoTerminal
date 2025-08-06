@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../../firebase-config";
+import { auth, db } from "../../firebase-config";
 import { collection, doc, setDoc, getDocs } from "firebase/firestore";
 
 const RegistrarEjercicio = ({ setCurrentView }) => {
@@ -25,7 +25,15 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
 
   const cargarEjerciciosExistentes = async () => {
     try {
-      const ejerciciosSnapshot = await getDocs(collection(db, "ejercicios"));
+      const user = auth.currentUser;
+      if (!user) {
+        console.error("Usuario no autenticado");
+        return;
+      }
+
+      // ✅ CORREGIDO: Obtener ejercicios del usuario específico
+      const ejerciciosRef = collection(db, "usuarios", user.uid, "ejercicios");
+      const ejerciciosSnapshot = await getDocs(ejerciciosRef);
       const ejerciciosList = ejerciciosSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -89,7 +97,14 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
     setLoading(true);
 
     try {
-      const ejercicioRef = doc(collection(db, "ejercicios"));
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Usuario no autenticado");
+        return;
+      }
+
+      // ✅ CORREGIDO: Crear referencia en ejercicios del usuario específico
+      const ejercicioRef = doc(collection(db, "usuarios", user.uid, "ejercicios"));
       const nuevoEjercicio = {
         nombre: nombre.trim(),
         musculo: musculo,
@@ -101,7 +116,9 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
         // Datos adicionales para el sistema de sobrecarga progresiva
         volumenBase: parseFloat(pesoMaximo) * parseInt(repeticionesMaximas) * parseInt(setsMaximos),
         categoria: categorizarEjercicio(musculo),
-        activo: true
+        activo: true,
+        notas: "",
+        equipamiento: ""
       };
 
       await setDoc(ejercicioRef, nuevoEjercicio);
@@ -151,7 +168,9 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
       "Isquiotibiales": "Tracción Inferior",
       "Pantorrillas": "Tracción Inferior",
       "Abdominales": "Core",
-      "Core": "Core"
+      "Core": "Core",
+      "Antebrazos": "Tracción Superior",
+      "Trapecio": "Tracción Superior"
     };
     
     return categorias[musculo] || "General";
@@ -171,6 +190,16 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
     const reps = parseInt(repeticionesMaximas) || 0;
     const sets = parseInt(setsMaximos) || 0;
     return peso * reps * sets;
+  };
+
+  const calcular1RMEstimado = () => {
+    const peso = parseFloat(pesoMaximo) || 0;
+    const reps = parseInt(repeticionesMaximas) || 0;
+    
+    if (peso <= 0 || reps <= 0) return 0;
+    
+    // Fórmula de Epley para calcular 1RM
+    return peso * (1 + reps / 30);
   };
 
   return (
@@ -283,7 +312,7 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
                 <input
                   type="number"
                   step="0.5"
-                  min="0.5"
+                  min="0"
                   max="500"
                   placeholder="Ej: 80"
                   value={pesoMaximo}
@@ -348,7 +377,7 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
                   <div>
                     <strong>1RM Estimado:</strong><br />
                     <span className="info-valor rm">
-                      {(parseFloat(pesoMaximo) * 1.15 || 0).toFixed(1)} kg
+                      {calcular1RMEstimado().toFixed(1)} kg
                     </span>
                   </div>
                 </div>
@@ -366,6 +395,7 @@ const RegistrarEjercicio = ({ setCurrentView }) => {
               <li><strong>Repeticiones máximas:</strong> Las repeticiones que puedes hacer con ese peso máximo</li>
               <li><strong>Sets máximos:</strong> El número máximo de series que realizas normalmente</li>
               <li><strong>Sé conservador:</strong> Es mejor empezar con valores menores y ajustar después</li>
+              <li><strong>1RM estimado:</strong> Se calcula automáticamente usando la fórmula de Epley</li>
             </ul>
           </div>
 

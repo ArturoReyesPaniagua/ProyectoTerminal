@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../../firebase-config";
-import { collection, doc, getDocs, getDoc, addDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase-config";
+import { collection, doc, getDocs, getDoc, addDoc, query, orderBy } from "firebase/firestore";
 
 // Constantes para cálculos
 const TRAINING_CONSTANTS = {
@@ -50,11 +50,18 @@ const useTrainingObjectives = (rutinaSeleccionada) => {
 
       try {
         setLoading(true);
+        const user = auth.currentUser;
+        if (!user) {
+          setError("Usuario no autenticado");
+          setLoading(false);
+          return;
+        }
+
         const ejerciciosList = [];
 
         for (const ejercicioId of rutinaSeleccionada.ejercicios) {
-          // Obtener datos del ejercicio
-          const ejercicioRef = doc(db, "ejercicios", ejercicioId);
+          // ✅ CORREGIDO: Obtener datos del ejercicio del usuario específico
+          const ejercicioRef = doc(db, "usuarios", user.uid, "ejercicios", ejercicioId);
           const ejercicioDoc = await getDoc(ejercicioRef);
 
           if (!ejercicioDoc.exists()) {
@@ -64,19 +71,19 @@ const useTrainingObjectives = (rutinaSeleccionada) => {
 
           const ejercicioData = ejercicioDoc.data();
 
-          // Obtener historial de entrenamientos
-          const entrenamientosSnapshot = await getDocs(
-            collection(db, "ejercicios", ejercicioId, "entrenamientos")
-          );
+          // ✅ CORREGIDO: Obtener historial de entrenamientos del usuario específico
+          const entrenamientosRef = collection(db, "usuarios", user.uid, "ejercicios", ejercicioId, "entrenamientos");
+          const entrenamientosQuery = query(entrenamientosRef, orderBy("fecha", "desc"));
+          const entrenamientosSnapshot = await getDocs(entrenamientosQuery);
 
           const entrenamientos = entrenamientosSnapshot.docs
-            .map(doc => doc.data())
+            .map(doc => ({ id: doc.id, ...doc.data() }))
             .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // Más reciente primero
 
           const ultimoEntrenamiento = entrenamientos[0] || {
-            pesoUtilizado: 0,
-            repeticionesAlcanzadas: 0,
-            setsRealizados: 0,
+            pesoUtilizado: ejercicioData.pesoMaximo * 0.7 || 20, // 70% del peso máximo como inicio
+            repeticionesAlcanzadas: ejercicioData.repeticionesMaximas || 8,
+            setsRealizados: ejercicioData.setsMaximos || 3,
           };
 
           // Calcular nuevos objetivos
@@ -98,11 +105,13 @@ const useTrainingObjectives = (rutinaSeleccionada) => {
             nombre: ejercicioData.nombre,
             musculo: ejercicioData.musculo,
             pesoSugerido: Number(pesoSugerido.toFixed(2)),
-            repeticionesSugeridas,
+            repeticionesSugeridas: Math.min(repeticionesSugeridas, ejercicioData.repeticionesMaximas + 2),
             setsSugeridos: setsRealizados || TRAINING_CONSTANTS.DEFAULT_SETS,
             volumenAnterior,
             volumenObjetivo,
             ultimoEntrenamiento,
+            pesoMaximo: ejercicioData.pesoMaximo,
+            esNuevoEjercicio: entrenamientos.length === 0,
           });
         }
 
@@ -127,14 +136,22 @@ const useTrainingProgress = (objetivos, setCurrentStep) => {
   const [repeticionesActuales, setRepeticionesActuales] = useState(0);
   const [contadorSets, setContadorSets] = useState(1);
   const [ejerciciosCompletados, setEjerciciosCompletados] = useState([]);
+  const [pesoUtilizado, setPesoUtilizado] = useState(0);
 
   const ejercicioActual = objetivos[currentIndex];
+
+  // Inicializar peso sugerido cuando cambia el ejercicio
+  useEffect(() => {
+    if (ejercicioActual) {
+      setPesoUtilizado(ejercicioActual.pesoSugerido);
+    }
+  }, [ejercicioActual]);
 
   const handleRegistrarSet = async () => {
     if (!ejercicioActual) return;
 
     const volumenActual = TrainingCalculator.calculateCurrentVolume(
-      ejercicioActual.pesoSugerido, repeticionesActuales, contadorSets
+      pesoUtilizado, repeticionesActuales, contadorSets
     );
 
     const objetivoAlcanzado = volumenActual >= ejercicioActual.volumenObjetivo;
@@ -143,24 +160,36 @@ const useTrainingProgress = (objetivos, setCurrentStep) => {
     if (objetivoAlcanzado || setsCompletos) {
       // Guardar registro del ejercicio completado
       try {
+        const user = auth.currentUser;
+        if (!user) {
+          alert("Usuario no autenticado");
+          return;
+        }
+
         const registroEntrenamiento = {
           fecha: new Date().toISOString(),
-          pesoUtilizado: ejercicioActual.pesoSugerido,
+          pesoUtilizado: pesoUtilizado,
           repeticionesAlcanzadas: repeticionesActuales,
           setsRealizados: contadorSets,
           volumenAlcanzado: volumenActual,
           objetivoAlcanzado,
+          tiempoDescanso: 90, // Valor por defecto
+          sensacionEsfuerzo: Math.ceil(Math.random() * 10), // Simulado por ahora
+          notas: objetivoAlcanzado ? "Objetivo alcanzado" : "Sets completos"
         };
 
-        await addDoc(
-          collection(db, "ejercicios", ejercicioActual.id, "entrenamientos"), 
-          registroEntrenamiento
-        );
+        // ✅ CORREGIDO: Guardar entrenamiento en datos del usuario específico
+        const entrenamientosRef = collection(db, "usuarios", user.uid, "ejercicios", ejercicioActual.id, "entrenamientos");
+        await addDoc(entrenamientosRef, registroEntrenamiento);
 
         // Agregar a ejercicios completados
         setEjerciciosCompletados(prev => [...prev, {
           ...ejercicioActual,
-          ...registroEntrenamiento
+          ...registroEntrenamiento,
+          repeticionesFinales: repeticionesActuales,
+          setsFinales: contadorSets,
+          volumenFinal: volumenActual,
+          objetivoCumplido: objetivoAlcanzado
         }]);
 
         // Pasar al siguiente ejercicio o finalizar
@@ -168,6 +197,7 @@ const useTrainingProgress = (objetivos, setCurrentStep) => {
           setCurrentIndex(currentIndex + 1);
           setContadorSets(1);
           setRepeticionesActuales(0);
+          setPesoUtilizado(0); // Se establecerá en el useEffect
         } else {
           setCurrentStep(3); // Finalizar rutina
         }
@@ -182,19 +212,33 @@ const useTrainingProgress = (objetivos, setCurrentStep) => {
     }
   };
 
+  const saltarEjercicio = () => {
+    if (currentIndex + 1 < objetivos.length) {
+      setCurrentIndex(currentIndex + 1);
+      setContadorSets(1);
+      setRepeticionesActuales(0);
+      setPesoUtilizado(0);
+    } else {
+      setCurrentStep(3); // Finalizar rutina
+    }
+  };
+
   return {
     currentIndex,
     repeticionesActuales,
     setRepeticionesActuales,
     contadorSets,
+    pesoUtilizado,
+    setPesoUtilizado,
     handleRegistrarSet,
+    saltarEjercicio,
     ejerciciosCompletados,
     ejercicioActual,
   };
 };
 
 // Componente para mostrar progreso del ejercicio
-const ExerciseProgress = ({ ejercicio, currentSet, totalSets, volume, targetVolume }) => {
+const ExerciseProgress = ({ ejercicio, currentSet, totalSets, volume, targetVolume, pesoActual }) => {
   const progress = Math.min((volume / targetVolume) * 100, 100);
   
   return (
@@ -202,6 +246,9 @@ const ExerciseProgress = ({ ejercicio, currentSet, totalSets, volume, targetVolu
       <div className="progress-header">
         <h3>{ejercicio.nombre}</h3>
         <span className="muscle-group">{ejercicio.musculo}</span>
+        {ejercicio.esNuevoEjercicio && (
+          <span className="nuevo-ejercicio-badge">¡Nuevo ejercicio!</span>
+        )}
       </div>
       
       <div className="progress-stats">
@@ -212,6 +259,10 @@ const ExerciseProgress = ({ ejercicio, currentSet, totalSets, volume, targetVolu
         <div className="stat">
           <label>Peso sugerido:</label>
           <span>{ejercicio.pesoSugerido} kg</span>
+        </div>
+        <div className="stat">
+          <label>Peso actual:</label>
+          <span>{pesoActual} kg</span>
         </div>
         <div className="stat">
           <label>Repeticiones sugeridas:</label>
@@ -228,21 +279,37 @@ const ExerciseProgress = ({ ejercicio, currentSet, totalSets, volume, targetVolu
           ></div>
         </div>
         <span className="progress-text">
-          {volume.toFixed(0)} / {targetVolume.toFixed(0)} kg
+          {volume.toFixed(0)} / {targetVolume.toFixed(0)} kg×reps×sets
         </span>
+        <div className="progress-percentage">
+          {progress.toFixed(1)}% completado
+        </div>
       </div>
+
+      {ejercicio.ultimoEntrenamiento && !ejercicio.esNuevoEjercicio && (
+        <div className="ultimo-entrenamiento">
+          <h5>Último entrenamiento:</h5>
+          <p>
+            {ejercicio.ultimoEntrenamiento.pesoUtilizado}kg × {ejercicio.ultimoEntrenamiento.repeticionesAlcanzadas} reps × {ejercicio.ultimoEntrenamiento.setsRealizados} sets
+          </p>
+          <p>Volumen: {ejercicio.volumenAnterior.toFixed(0)} kg×reps×sets</p>
+        </div>
+      )}
     </div>
   );
 };
 
-const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
+const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep }) => {
   const { objetivos, loading, error } = useTrainingObjectives(rutinaSeleccionada);
   const {
     currentIndex,
     repeticionesActuales,
     setRepeticionesActuales,
     contadorSets,
+    pesoUtilizado,
+    setPesoUtilizado,
     handleRegistrarSet,
+    saltarEjercicio,
     ejerciciosCompletados,
     ejercicioActual,
   } = useTrainingProgress(objetivos, setCurrentStep);
@@ -251,6 +318,7 @@ const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
     return (
       <div className="loading-container">
         <div className="loading">Calculando objetivos de entrenamiento...</div>
+        <div className="spinner"></div>
       </div>
     );
   }
@@ -259,7 +327,9 @@ const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
     return (
       <div className="error-container">
         <div className="error-message">{error}</div>
-        <button onClick={() => setCurrentStep(1)}>Volver</button>
+        <button onClick={() => setCurrentStep(1)} className="login-button">
+          Volver
+        </button>
       </div>
     );
   }
@@ -268,7 +338,9 @@ const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
     return (
       <div className="error-container">
         <div className="error-message">No se encontraron ejercicios válidos en esta rutina</div>
-        <button onClick={() => setCurrentStep(1)}>Volver</button>
+        <button onClick={() => setCurrentStep(1)} className="login-button">
+          Volver
+        </button>
       </div>
     );
   }
@@ -277,14 +349,18 @@ const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
     return (
       <div className="error-container">
         <div className="error-message">Error: No hay ejercicio actual</div>
-        <button onClick={() => setCurrentStep(1)}>Volver</button>
+        <button onClick={() => setCurrentStep(1)} className="login-button">
+          Volver
+        </button>
       </div>
     );
   }
 
   const volumenActual = TrainingCalculator.calculateCurrentVolume(
-    ejercicioActual.pesoSugerido, repeticionesActuales, contadorSets
+    pesoUtilizado, repeticionesActuales, contadorSets
   );
+
+  const puedeRegistrarSet = repeticionesActuales > 0 && pesoUtilizado > 0;
 
   return (
     <div className="calculo-dinamico-mejorado">
@@ -301,8 +377,42 @@ const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
         totalSets={ejercicioActual.setsSugeridos}
         volume={volumenActual}
         targetVolume={ejercicioActual.volumenObjetivo}
+        pesoActual={pesoUtilizado}
       />
 
+      {/* Control de peso */}
+      <div className="peso-input-section">
+        <label htmlFor="peso">Peso utilizado (kg):</label>
+        <input
+          id="peso"
+          type="number"
+          step="0.5"
+          min="0"
+          max={ejercicioActual.pesoMaximo * 1.2}
+          value={pesoUtilizado}
+          onChange={(e) => setPesoUtilizado(parseFloat(e.target.value) || 0)}
+          className="peso-input"
+          placeholder={ejercicioActual.pesoSugerido.toString()}
+        />
+        <div className="peso-sugerencias">
+          <button 
+            onClick={() => setPesoUtilizado(ejercicioActual.pesoSugerido)}
+            className="peso-sugerencia"
+          >
+            Usar sugerido ({ejercicioActual.pesoSugerido}kg)
+          </button>
+          {ejercicioActual.ultimoEntrenamiento && (
+            <button 
+              onClick={() => setPesoUtilizado(ejercicioActual.ultimoEntrenamiento.pesoUtilizado)}
+              className="peso-sugerencia"
+            >
+              Usar anterior ({ejercicioActual.ultimoEntrenamiento.pesoUtilizado}kg)
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Control de repeticiones */}
       <div className="rep-input-section">
         <label htmlFor="repeticiones">Repeticiones realizadas en este set:</label>
         <input
@@ -315,32 +425,64 @@ const CalculoDinamico = ({ rutinaSeleccionada, setCurrentStep, userId }) => {
           className="rep-input"
           placeholder="0"
         />
+        <div className="rep-sugerencias">
+          <button 
+            onClick={() => setRepeticionesActuales(ejercicioActual.repeticionesSugeridas)}
+            className="rep-sugerencia"
+          >
+            Usar sugerido ({ejercicioActual.repeticionesSugeridas})
+          </button>
+        </div>
       </div>
 
+      {/* Información del set actual */}
+      <div className="set-info">
+        <h4>Set {contadorSets}:</h4>
+        <p>
+          {pesoUtilizado > 0 && repeticionesActuales > 0 ? (
+            <>
+              {pesoUtilizado}kg × {repeticionesActuales} reps = {(pesoUtilizado * repeticionesActuales).toFixed(0)} volumen parcial
+            </>
+          ) : (
+            "Ingresa peso y repeticiones para ver el volumen"
+          )}
+        </p>
+      </div>
+
+      {/* Botones de acción */}
       <div className="action-buttons">
         <button 
           onClick={handleRegistrarSet}
           className="register-set-button"
-          disabled={repeticionesActuales <= 0}
+          disabled={!puedeRegistrarSet}
         >
-          Registrar Set {contadorSets}
+          ✓ Registrar Set {contadorSets}
+        </button>
+        
+        <button 
+          onClick={saltarEjercicio}
+          className="skip-button"
+        >
+          ⏭️ Saltar Ejercicio
         </button>
         
         <button 
           onClick={() => setCurrentStep(1)}
           className="cancel-button"
         >
-          Cancelar Entrenamiento
+          ❌ Cancelar Entrenamiento
         </button>
       </div>
 
+      {/* Ejercicios completados */}
       {ejerciciosCompletados.length > 0 && (
         <div className="completed-exercises">
-          <h4>Ejercicios completados:</h4>
+          <h4>Ejercicios completados ({ejerciciosCompletados.length}):</h4>
           <ul>
             {ejerciciosCompletados.map((ej, index) => (
               <li key={index}>
-                {ej.nombre} - {ej.setsRealizados} sets, {ej.repeticionesAlcanzadas} reps
+                <strong>{ej.nombre}</strong> - {ej.setsFinales} sets, {ej.repeticionesFinales} reps, {ej.pesoUtilizado}kg
+                {ej.objetivoCumplido && <span className="objetivo-cumplido"> ✅ Objetivo cumplido</span>}
               </li>
             ))}
           </ul>

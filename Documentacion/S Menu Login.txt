@@ -1,35 +1,29 @@
-title IU 1 Menú Login 
+title IU 1 MenuLogin 
 
 actor Usuario
 participant index.js
 participant App.js
-participant react
 participant ViewRenderer.jsx
 participant MenuLogin.jsx
+participant react
 
-note over App.js: currentView = "menu"
 App.js->ViewRenderer.jsx:<ViewRenderer\n  currentView={"menu"}\n  setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
+ViewRenderer.jsx->MenuLogin.jsx:<MenuLogin setCurrentView={setCurrentView} />
 
-ViewRenderer.jsx->MenuLogin.jsx:<MenuLogin {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />
-
-note over MenuLogin.jsx: Componente funcional sin estados
-
-ViewRenderer.jsx<--MenuLogin.jsx:JSX 
+MenuLogin.jsx->react:return JSX del menú
+ViewRenderer.jsx<--MenuLogin.jsx:JSX menú de bienvenida
 App.js<--ViewRenderer.jsx:JSX
-App.js-->index.js:jsx\n
-Usuario<--index.js:U1 Menú Login
+App.js-->index.js:JSX renderizado final
+Usuario<--index.js:Ve pantalla con opciones de inicio o registro
 
-alt click Iniciar sesión
-    Usuario->MenuLogin.jsx:click Iniciar sesión
+alt Usuario hace click en "Iniciar Sesión"
+    Usuario->MenuLogin.jsx:onClick botón "Iniciar Sesión"
     MenuLogin.jsx->react:setCurrentView("login")
-    react-->MenuLogin.jsx:
-    index.js<-react:render
-    == ir a index inicia ==
-else click Registrarse
-    Usuario->MenuLogin.jsx:click Registrarse
-    MenuLogin.jsx->react:setCurrentView("signIn")
-    react-->MenuLogin.jsx:
-    index.js<-react:render
-    == ir a index inicia ==
+    ==Ir a index inicia==
 end
-    
+
+alt Usuario hace click en "Crear Cuenta"
+    Usuario->MenuLogin.jsx:onClick botón "Crear Cuenta"
+    MenuLogin.jsx->react:setCurrentView("signIn")
+    ==Ir a index inicia==
+end
