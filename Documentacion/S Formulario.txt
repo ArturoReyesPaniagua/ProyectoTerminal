@@ -1,56 +1,85 @@
-title IU 4 FormularioDatos 
+title IU-FormularioDatos (Formulario de Datos Iniciales o Actualización)
 
 actor Usuario
 participant index.js
 participant App.js
 participant ViewRenderer.jsx
 participant FormularioDatos.jsx
+participant react
 participant Firebase Auth
 participant Firestore
-participant react
 
-App.js->ViewRenderer.jsx:<ViewRenderer\n  currentView={"formularioDatos"}\n  setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  ... />
-ViewRenderer.jsx->FormularioDatos.jsx:<FormularioDatos setCurrentView={setCurrentView} currentUser={currentUser} mode="create" />
+== Renderizado de la vista ==
 
-== Carga de datos inicial ==
-alt currentUser existe
-    FormularioDatos.jsx->Firestore:getDoc("usuarios/{uid}")
-    Firestore-->FormularioDatos.jsx:userDoc
-    FormularioDatos.jsx->react:setFormData(data)
-    Usuario<--FormularioDatos.jsx:Formulario prellenado
+App.js -> ViewRenderer.jsx: <ViewRenderer currentView={"formularioDatos"} ... />
+ViewRenderer.jsx -> FormularioDatos.jsx: render()
+
+FormularioDatos.jsx -> react: useEffect()
+react -> Firestore: getDoc("usuarios/{uid}") -->> FormularioDatos.jsx
+alt Si existe userDoc
+    FormularioDatos.jsx -> react: setFormData(data)
 else
-    Usuario<--FormularioDatos.jsx:Formulario vacío
+    FormularioDatos.jsx -> react: setFormData(defaultValues)
 end
 
-alt Usuario llena formulario
-    Usuario->FormularioDatos.jsx:onChange cada campo
-    FormularioDatos.jsx->react:updateField()
-    react-->FormularioDatos.jsx:actualizar estado
+== Interacción del usuario ==
+
+Usuario -> FormularioDatos.jsx: Ingresa edad (onChange)
+FormularioDatos.jsx -> react: updateField("edad", valor)
+
+Usuario -> FormularioDatos.jsx: Ingresa peso (onChange)
+FormularioDatos.jsx -> react: updateField("peso", valor)
+
+Usuario -> FormularioDatos.jsx: Ingresa cintura, cuello, etc. (onChange)
+FormularioDatos.jsx -> react: updateField(campo, valor)
+
+Usuario -> FormularioDatos.jsx: Clic en "Establecer datos" (onClick)
+FormularioDatos.jsx -> react: handleSubmit()
+
+FormularioDatos.jsx<--react:return
+== Validación del formulario ==
+
+FormularioDatos.jsx -> react: validateForm()
+FormularioDatos.jsx<--react:return
+alt Campos requeridos incompletos
+    FormularioDatos.jsx -> react: setError("Faltan campos")
+FormularioDatos.jsx<--react:return
+    FormularioDatos.jsx --> Usuario: Muestra error 
+    
+else if Valores inválidos
+    FormularioDatos.jsx -> react: setError("Valor fuera de rango")
+FormularioDatos.jsx<-react:info
+    FormularioDatos.jsx<--react:return
+    FormularioDatos.jsx --> Usuario: Muestra error 
+    
+    
+else
+    FormularioDatos.jsx -> react: setError(null)
+    FormularioDatos.jsx<--react:return
 end
 
-alt Usuario hace click en botón "Establecer datos" o "Actualizar datos"
-    Usuario->FormularioDatos.jsx:onClick handleSubmit()
-    FormularioDatos.jsx->FormularioDatos.jsx:saveData(isFirstTime)
-    FormularioDatos.jsx->FormularioDatos.jsx:validateForm()
+== Guardado de datos ==
 
-    alt Validación correcta
-        FormularioDatos.jsx->Firestore:setDoc("usuarios/{uid}", datosCompletos + medidas)
-        alt isFirstTime = false
-            FormularioDatos.jsx->Firestore:addDoc("usuarios/{uid}/historial", medidas + notas)
-            Firestore-->FormularioDatos.jsx:docRef
-        else primera vez
-            note right of FormularioDatos.jsx: No se guarda en historial
-        end
-        FormularioDatos.jsx->react:setCurrentView("menuPrincipal")
-        Usuario<--FormularioDatos.jsx:Redirige a menú principal
-    else Validación falla
-        FormularioDatos.jsx->react:setError(mensaje)
-        Usuario<--FormularioDatos.jsx:Ve mensaje de error
+FormularioDatos.jsx -> Firebase Auth: auth.currentUser
+alt Usuario autenticado
+    FormularioDatos.jsx ->> Firestore: setDoc("usuarios/{uid}", data, { merge: true })
+    FormularioDatos.jsx<--react:return
+    alt Primera vez
+        FormularioDatos.jsx --> Usuario: ✅ Datos establecidos con éxito
+    else Actualización
+        FormularioDatos.jsx ->> Firestore: addDoc("usuarios/{uid}/historial", datosActualizados)
+        FormularioDatos.jsx --> Usuario:  Datos actualizados con éxito
     end
+
+    FormularioDatos.jsx -> react: setCurrentView("menuPrincipal")
+    FormularioDatos.jsx<--react:return
+else
+    FormularioDatos.jsx -> react: setError("Usuario no autenticado")
+    FormularioDatos.jsx<--react:return
+    FormularioDatos.jsx --> Usuario: Error al guardar
 end
 
-alt Usuario hace click en "Cancelar"
-    Usuario->FormularioDatos.jsx:onClick botón Cancelar
-    FormularioDatos.jsx->react:setCurrentView("menuPrincipal")
-    Usuario<--FormularioDatos.jsx:Redirige sin guardar
-end
+== Cancelar==
+
+Usuario -> FormularioDatos.jsx: Clic en "Cancelar"
+FormularioDatos.jsx -> react: setCurrentView("menuPrincipal")

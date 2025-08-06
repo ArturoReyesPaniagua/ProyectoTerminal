@@ -1,4 +1,8 @@
-title IU 6 Menu Principal
+@startuml
+
+' Diagrama de secuencia maestro -
+
+title IU 5 MenuPrincipal - Navegación hacia todas las vistas de la app
 
 actor Usuario
 participant index.js
@@ -7,48 +11,34 @@ participant ViewRenderer.jsx
 participant MenuPrincipal.jsx
 participant react
 
-App.js->ViewRenderer.jsx:<ViewRenderer\n  currentView={"menuPrincipal"}\n  setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>
-ViewRenderer.jsx->MenuPrincipal.jsx:<MenuPrincipal {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />
-ViewRenderer.jsx<--MenuPrincipal.jsx:jsx
-App.js<--ViewRenderer.jsx:jsx
-index.js<--App.js:jsx
-Usuario<-index.js:IU 6 Menu Principal
+== Inicio en App ==
+App.js -> ViewRenderer.jsx: <ViewRenderer currentView={"menuPrincipal"} />
+ViewRenderer.jsx -> MenuPrincipal.jsx: <MenuPrincipal setCurrentView={setCurrentView} />
 
-alt click Gestionar Rutinas
-    Usuario->MenuPrincipal.jsx:click Gestionar Rutinas
-    MenuPrincipal.jsx->react:setCurrentView("menuRutina")
-    index.js<-react:render
-    == ir a index inicia ==
-    
-else click Entrenar
-    Usuario->MenuPrincipal.jsx:click Entrenar
-    MenuPrincipal.jsx->react:setCurrentView("registrarRutina")
-    index.js<-react:render
-    == ir a index inicia ==
-    
-else click % de Grasa Corporal
-    Usuario->MenuPrincipal.jsx:click % de Grasa Corporal
-    MenuPrincipal.jsx->react:setCurrentView("grasa")
-    index.js<-react:render
-    == ir a index inicia ==
-    
-else click Historial
-    Usuario->MenuPrincipal.jsx:click Historial
-    MenuPrincipal.jsx->react:setCurrentView("historial")
-    index.js<-react:render
-    == ir a index inicia ==
-    
-else click Actualizar Datos
-    Usuario->MenuPrincipal.jsx:click Actualizar Datos
-    MenuPrincipal.jsx->react:setCurrentView("actualizarDatos")
-    index.js<-react:render
-    == ir a index inicia ==
-    
-else click Salir
-    Usuario->MenuPrincipal.jsx:click Salir
-    MenuPrincipal.jsx->App.js:handleSignOut()
-    App.js->Firebase Auth:auth.signOut()
-    Firebase Auth-->App.js:success
-    note over App.js: onAuthStateChanged se dispara
-    == ir a index inicia ==
+Usuario -> MenuPrincipal.jsx: Selecciona opción del menú
+
+alt Gestionar Rutinas
+    MenuPrincipal.jsx -> react: setCurrentView("menuRutina")
+    Usuario <-- MenuPrincipal.jsx: Navega a IU 6
+else Entrenar
+    MenuPrincipal.jsx -> react: setCurrentView("registrarRutina")
+    Usuario <-- MenuPrincipal.jsx: Navega a IU 7
+else Calcular Grasa
+    MenuPrincipal.jsx -> react: setCurrentView("grasa")
+    Usuario <-- MenuPrincipal.jsx: Navega a IU 8
+else Ver Historial
+    MenuPrincipal.jsx -> react: setCurrentView("historial")
+    Usuario <-- MenuPrincipal.jsx: Navega a IU 9
+else Actualizar Datos
+    MenuPrincipal.jsx -> react: setCurrentView("actualizarDatos")
+    Usuario <-- MenuPrincipal.jsx: Navega a IU 4 (FormularioDatos modo update)
 end
+
+== Cierre de sesión ==
+Usuario -> MenuPrincipal.jsx: Clic en botón "Salir"
+MenuPrincipal.jsx -> App.js: handleSignOut()
+App.js -> react: setCurrentUser(null)
+App.js -> react: setCurrentView("menu")
+Usuario <-- App.js: Navega a IU 1 (MenuLogin)
+
+@enduml

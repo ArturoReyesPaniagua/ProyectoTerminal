@@ -530,7 +530,7 @@ body {
 }
 
 .tip {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
   padding: 15px;
   border-radius: var(--radio-medio);
   backdrop-filter: blur(10px);

@@ -96,7 +96,7 @@ const CalculoGrasa = ({ setCurrentView }) => {
   };
 
   const obtenerRecomendaciones = (porcentaje, sexo) => {
-    const valor = parseFloat(porcentaje);
+    //const valor = parseFloat(porcentaje); //ya no se necesita parsear, ya que porcentajeGrasa ya es un string con 1 decimal
     const interpretacion = interpretarPorcentajeGrasa(porcentaje, sexo);
     
     const recomendaciones = {
