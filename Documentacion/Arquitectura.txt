@@ -1,81 +1,464 @@
-"index.js" -> "react"
-"index.js" -> react-dom.client
-"index.js" -> "App.js"
-"index.js" -> bootstrap.dist/css.bootstrap
+direction: right
 
-"firebase-config.js" -> firebase.app
-"firebase-config.js" -> firebase.auth
-"firebase-config.js" -> firebase.firestore
-
-"App.js" -> "react"
-"App.js" -> Componentes.ViewRenderer
-"App.js" -> Componentes.Comunes.ComponenteCarga
-"App.js" -> "firebase-config.js"
-"App.js" -> firebase.firestore
-
-Componentes.ViewRenderer -> Componentes.InicioDeSesion.MenuLogin
-Componentes.ViewRenderer -> Componentes.InicioDeSesion.Login
-Componentes.ViewRenderer -> Componentes.InicioDeSesion.SingIn
-Componentes.ViewRenderer -> Componentes.InicioDeSesion.FormularioDatos
-Componentes.ViewRenderer -> Componentes.MenuPrincipal.MenuLogin
-Componentes.ViewRenderer -> Componentes.Rutina.MenuRutina
-Componentes.ViewRenderer -> Componentes.Rutina.RegistrarEjercicio
-Componentes.ViewRenderer -> Componentes.RegistroRutina.RegistroRutina
-Componentes.ViewRenderer -> Componentes.RegistroRutina.CalculoDinamico
-Componentes.ViewRenderer -> Componentes.Grasa.CalculoGrasa
-Componentes.ViewRenderer -> Componentes.Historial.Historial
-Componentes.ViewRenderer -> Componentes.Graficos.GraficosProgreso
-
-Componentes.Rutina.RegistrarEjercicio -> "firebase-config.js"
-Componentes.Rutina.RegistrarEjercicio -> react
-Componentes.Rutina.RegistrarEjercicio -> firebase.firestore
-
-Componentes.Rutina.MenuRutina -> react
-Componentes.Rutina.MenuRutina -> "firebase-config.js"
-Componentes.Rutina.MenuRutina -> Componentes.Comunes.ComponenteCarga
-Componentes.Rutina.MenuRutina -> firebase.firestore
-
-Componentes.RegistroRutina.ResumenEntrenamiento -> react
-
-Componentes.RegistroRutina.RegistroRutina -> react
-Componentes.RegistroRutina.RegistroRutina -> "firebase-config.js"
-Componentes.RegistroRutina.RegistroRutina -> firebase.firestore
-Componentes.RegistroRutina.RegistroRutina -> Componentes.RegistroRutina.CalculoDinamicoMejorado
-Componentes.RegistroRutina.RegistroRutina -> Componentes.RegistroRutina.ResumenEntrenamiento
-
-Componentes.RegistroRutina.CalculoDinamicoMejorado -> react
-Componentes.RegistroRutina.CalculoDinamicoMejorado -> firebase.firestore
-Componentes.RegistroRutina.CalculoDinamicoMejorado -> "firebase-config.js"
-
-Componentes.MenuPrincipal."MenuPrincipal.js" -> react
-Componentes.MenuPrincipal."MenuPrincipal.js" -> "firebase-config.js"
-
-Componentes.InicioDeSesion.SingIn -> react
-Componentes.InicioDeSesion.SingIn -> firebase.firestore
-Componentes.InicioDeSesion.SingIn -> firebase.auth
-Componentes.InicioDeSesion.SingIn -> "firebase-config.js"
-
-Componentes.InicioDeSesion.MenuLogin -> react
-
-Componentes.InicioDeSesion.Login -> react
-Componentes.InicioDeSesion.Login -> firebase.auth
-Componentes.InicioDeSesion.Login -> "firebase-config.js"
-
-Componentes.InicioDeSesion.FormularioDatos -> react
-Componentes.InicioDeSesion.FormularioDatos -> "firebase-config.js"
-Componentes.InicioDeSesion.FormularioDatos -> firebase.firestore
-
-Componentes.Historial.Historial -> react
-Componentes.Historial.Historial -> "firebase-config.js"
-Componentes.Historial.Historial -> firebase.firestore
-
-Componentes.Grasa.CalculoGrasa -> react
-Componentes.Grasa.CalculoGrasa -> "firebase-config.js"
-Componentes.Grasa.CalculoGrasa -> firebase.firestore
-
-Componentes.Graficos.GraficosProgreso -> react
-Componentes.Graficos.GraficosProgreso -> firebase.firestore
-Componentes.Graficos.GraficosProgreso -> firebase.firestore
-Componentes.Graficos.GraficosProgreso -> recharts
-
-Componentes.Comunes.ComponenteCarga -> react
+classes: {
+  label_bg: {
+    shape: text
+    style: {
+      stroke-width: 015
+      font-color: "#003311"
+      font-size: 18
+    }
+  }
+  componentes_comunes_class: {
+    style: {
+      fill: "#b3c6ff"
+      stroke: "#5b3a29"
+    }
+  }
+  componentes_graficos_class: {
+    style: {
+      fill: "#b3fff9"
+      stroke: "#666666"
+    }
+  }
+  componentes_grasa_class: {
+    style: {
+      fill: "#ffffb3"
+      stroke: "#c71585"
+    }
+  }
+  componentes_historial_class: {
+    style: {
+      fill: "#e6ccb3"
+      stroke: "#b3b300"
+    }
+  }
+  componentes_iniciodesesion_class: {
+    style: {
+      fill: "#e6e6e6"
+      stroke: "#a83232"
+    }
+  }
+  componentes_menuprincipal_class: {
+    style: {
+      fill: "#e6ccff"
+      stroke: "#cc7a00"
+    }
+  }
+  componentes_registrorutina_class: {
+    style: {
+      fill: "#ffb3b3"
+      stroke: "#e6194b"
+    }
+  }
+  componentes_rutina_class: {
+    style: {
+      fill: "#ffd9b3"
+      stroke: "#009999"
+    }
+  }
+  componentes_class: {
+    style: {
+      fill: "#ffcccc"
+      stroke: "#4b2e83"
+    }
+  }
+  utils_class: {
+    style: {
+      fill: "#b3ffb3"
+      stroke: "#008000"
+    }
+  }
+}
+  componentes_comunes_componentecarga_jsx: "Componentes/Comunes\nComponenteCarga.jsx\n(382 lines)" { style: { stroke-width: 4 }
+ shape: "rectangle" }
+  componentes_comunes_componentecarga_jsx.class: componentes_comunes_class
+  componentes_graficos_graficosprogreso_jsx: "Componentes/Graficos\nGraficosProgreso.jsx\n(531 lines)" { style: { stroke-width: 5 }
+ shape: "rectangle" }
+  componentes_graficos_graficosprogreso_jsx.class: componentes_graficos_class
+  componentes_grasa_calculograsa_jsx: "Componentes/Grasa\nCalculoGrasa.jsx\n(432 lines)" { style: { stroke-width: 5 }
+ shape: "rectangle" }
+  componentes_grasa_calculograsa_jsx.class: componentes_grasa_class
+  componentes_historial_historial_jsx: "Componentes/Historial\nHistorial.jsx\n(721 lines)" { style: { stroke-width: 7 }
+ shape: "rectangle" }
+  componentes_historial_historial_jsx.class: componentes_historial_class
+  componentes_iniciodesesion_formulariodatos_jsx: "Componentes/InicioDeSesion\nFormularioDatos.jsx\n(351 lines)" { style: { stroke-width: 4 }
+ shape: "rectangle" }
+  componentes_iniciodesesion_formulariodatos_jsx.class: componentes_iniciodesesion_class
+  componentes_iniciodesesion_login_jsx: "Componentes/InicioDeSesion\nLogin.jsx\n(169 lines)" { style: { stroke-width: 2 }
+ shape: "rectangle" }
+  componentes_iniciodesesion_login_jsx.class: componentes_iniciodesesion_class
+  componentes_iniciodesesion_menulogin_jsx: "Componentes/InicioDeSesion\nMenuLogin.jsx\n(173 lines)" { style: { stroke-width: 2 }
+ shape: "rectangle" }
+  componentes_iniciodesesion_menulogin_jsx.class: componentes_iniciodesesion_class
+  componentes_iniciodesesion_signin_jsx: "Componentes/InicioDeSesion\nSignIn.jsx\n(249 lines)" { style: { stroke-width: 3 }
+ shape: "rectangle" }
+  componentes_iniciodesesion_signin_jsx.class: componentes_iniciodesesion_class
+  componentes_menuprincipal_menuprincipal_jsx: "Componentes/MenuPrincipal\nMenuPrincipal.jsx\n(134 lines)" { style: { stroke-width: 2 }
+ shape: "rectangle" }
+  componentes_menuprincipal_menuprincipal_jsx.class: componentes_menuprincipal_class
+  componentes_registrorutina_calculodinamicomejorado_jsx: "Componentes/RegistroRutina\nCalculoDinamicoMejorado.jsx\n(495 lines)" { style: { stroke-width: 5 }
+ shape: "rectangle" }
+  componentes_registrorutina_calculodinamicomejorado_jsx.class: componentes_registrorutina_class
+  componentes_registrorutina_registrorutina_jsx: "Componentes/RegistroRutina\nRegistroRutina.jsx\n(364 lines)" { style: { stroke-width: 4 }
+ shape: "rectangle" }
+  componentes_registrorutina_registrorutina_jsx.class: componentes_registrorutina_class
+  componentes_registrorutina_resumenentrenamiento_jsx: "Componentes/RegistroRutina\nResumenEntrenamiento.jsx\n(410 lines)" { style: { stroke-width: 4 }
+ shape: "rectangle" }
+  componentes_registrorutina_resumenentrenamiento_jsx.class: componentes_registrorutina_class
+  componentes_rutina_menurutina_jsx: "Componentes/Rutina\nMenuRutina.jsx\n(480 lines)" { style: { stroke-width: 5 }
+ shape: "rectangle" }
+  componentes_rutina_menurutina_jsx.class: componentes_rutina_class
+  componentes_rutina_registrarejercicio_jsx: "Componentes/Rutina\nRegistrarEjercicio.jsx\n(434 lines)" { style: { stroke-width: 5 }
+ shape: "rectangle" }
+  componentes_rutina_registrarejercicio_jsx.class: componentes_rutina_class
+  componentes_viewrenderer_jsx: "Componentes\nViewRenderer.jsx\n(86 lines)" { style: { stroke-width: 2 }
+ shape: "rectangle" }
+  componentes_viewrenderer_jsx.class: componentes_class
+  utils_fitnessutils_jsx: "utils\nfitnessUtils.jsx\n(366 lines)" { style: { stroke-width: 4 }
+ shape: "rectangle" }
+  utils_fitnessutils_jsx.class: utils_class
+  app_css: ".\nApp.css\n(3 lines)" { style: { stroke-width: 1 }
+ shape: "rectangle" }
+  app_js: ".\nApp.js\n(85 lines)" { style: { stroke-width: 2 }
+ shape: "rectangle" }
+  firebase-config_js: ".\nfirebase-config.js\n(20 lines)" { style: { stroke-width: 1 }
+ shape: "rectangle" }
+  global_css: ".\nglobal.css\n(1652 lines)" { style: { stroke-width: 15 }
+ shape: "rectangle" }
+  index_css: ".\nindex.css\n(33 lines)" { style: { stroke-width: 1 }
+ shape: "rectangle" }
+  index_js: ".\nindex.js\n(14 lines)" { style: { stroke-width: 1 }
+ shape: "rectangle" }
+react: "react" { style: { stroke-width: 1 }
+ shape: "hexagon" }
+firebase/firestore: "firebase/firestore" { style: { stroke-width: 1 }
+ shape: "oval" }
+recharts: "recharts" { style: { stroke-width: 1 }
+ shape: "oval" }
+firebase/auth: "firebase/auth" { style: { stroke-width: 1 }
+ shape: "oval" }
+firebase/app: "firebase/app" { style: { stroke-width: 1 }
+ shape: "oval" }
+react-dom/client: "react-dom/client" { style: { stroke-width: 1 }
+ shape: "oval" }
+bootstrap/dist/css/bootstrap.min.css: "bootstrap/dist/css/bootstrap.min.css" { style: { stroke-width: 1 }
+ shape: "oval" }
+componentes_comunes_label_0: "React" { shape: "text" }
+componentes_comunes_label_0.class: label_bg
+componentes_graficos_label_1: "React,\nuseState,\nuseEffect" { shape: "text" }
+componentes_graficos_label_1.class: label_bg
+componentes_graficos_label_2: "auth,\ndb" { shape: "text" }
+componentes_graficos_label_2.class: label_bg
+componentes_graficos_label_3: "collection,\ngetDocs,\norderBy,\nquery" { shape: "text" }
+componentes_graficos_label_3.class: label_bg
+componentes_graficos_label_4: "LineChart,\nLine,\nXAxis,\nYAxis,\nCartesianGrid,\nTooltip,\nLegend,\nResponsiveContainer" { shape: "text" }
+componentes_graficos_label_4.class: label_bg
+componentes_grasa_label_5: "React,\nuseState,\nuseEffect" { shape: "text" }
+componentes_grasa_label_5.class: label_bg
+componentes_grasa_label_6: "auth,\ndb" { shape: "text" }
+componentes_grasa_label_6.class: label_bg
+componentes_grasa_label_7: "doc,\ngetDoc,\ncollection,\ngetDocs" { shape: "text" }
+componentes_grasa_label_7.class: label_bg
+componentes_grasa_label_8: "calcularPorcentajeGrasa,\ninterpretarPorcentajeGrasa,\nRANGOS_GRASA_CORPORAL" { shape: "text" }
+componentes_grasa_label_8.class: label_bg
+componentes_historial_label_9: "React,\nuseState,\nuseEffect" { shape: "text" }
+componentes_historial_label_9.class: label_bg
+componentes_historial_label_10: "auth,\ndb" { shape: "text" }
+componentes_historial_label_10.class: label_bg
+componentes_historial_label_11: "collection,\ngetDocs,\norderBy,\nquery" { shape: "text" }
+componentes_historial_label_11.class: label_bg
+componentes_historial_label_12: "LineChart,\nLine,\nXAxis,\nYAxis,\nCartesianGrid,\nTooltip,\nLegend,\nResponsiveContainer,\nBarChart,\nBar" { shape: "text" }
+componentes_historial_label_12.class: label_bg
+componentes_historial_label_13: "calcularPorcentajeGrasa" { shape: "text" }
+componentes_historial_label_13.class: label_bg
+componentes_iniciodesesion_label_14: "React,\nuseState,\nuseEffect" { shape: "text" }
+componentes_iniciodesesion_label_14.class: label_bg
+componentes_iniciodesesion_label_15: "auth,\ndb" { shape: "text" }
+componentes_iniciodesesion_label_15.class: label_bg
+componentes_iniciodesesion_label_16: "doc,\ncollection,\naddDoc,\nsetDoc,\ngetDoc" { shape: "text" }
+componentes_iniciodesesion_label_16.class: label_bg
+componentes_iniciodesesion_label_17: "_" { shape: "text" }
+componentes_iniciodesesion_label_17.class: label_bg
+componentes_iniciodesesion_label_18: "React,\nuseState" { shape: "text" }
+componentes_iniciodesesion_label_18.class: label_bg
+componentes_iniciodesesion_label_19: "signInWithEmailAndPassword" { shape: "text" }
+componentes_iniciodesesion_label_19.class: label_bg
+componentes_iniciodesesion_label_20: "auth" { shape: "text" }
+componentes_iniciodesesion_label_20.class: label_bg
+componentes_iniciodesesion_label_21: "React" { shape: "text" }
+componentes_iniciodesesion_label_21.class: label_bg
+componentes_iniciodesesion_label_22: "React,\nuseState" { shape: "text" }
+componentes_iniciodesesion_label_22.class: label_bg
+componentes_iniciodesesion_label_23: "createUserWithEmailAndPassword" { shape: "text" }
+componentes_iniciodesesion_label_23.class: label_bg
+componentes_iniciodesesion_label_24: "auth,\ndb" { shape: "text" }
+componentes_iniciodesesion_label_24.class: label_bg
+componentes_iniciodesesion_label_25: "doc,\nsetDoc" { shape: "text" }
+componentes_iniciodesesion_label_25.class: label_bg
+componentes_menuprincipal_label_26: "React" { shape: "text" }
+componentes_menuprincipal_label_26.class: label_bg
+componentes_registrorutina_label_27: "React,\nuseState,\nuseEffect" { shape: "text" }
+componentes_registrorutina_label_27.class: label_bg
+componentes_registrorutina_label_28: "auth,\ndb" { shape: "text" }
+componentes_registrorutina_label_28.class: label_bg
+componentes_registrorutina_label_29: "collection,\ndoc,\ngetDocs,\ngetDoc,\naddDoc,\nquery,\norderBy" { shape: "text" }
+componentes_registrorutina_label_29.class: label_bg
+componentes_registrorutina_label_30: "useState,\nuseEffect" { shape: "text" }
+componentes_registrorutina_label_30.class: label_bg
+componentes_registrorutina_label_31: "auth,\ndb" { shape: "text" }
+componentes_registrorutina_label_31.class: label_bg
+componentes_registrorutina_label_32: "collection,\ngetDocs" { shape: "text" }
+componentes_registrorutina_label_32.class: label_bg
+componentes_registrorutina_label_33: "CalculoDinamicoMejorado" { shape: "text" }
+componentes_registrorutina_label_33.class: label_bg
+componentes_registrorutina_label_34: "ResumenEntrenamiento" { shape: "text" }
+componentes_registrorutina_label_34.class: label_bg
+componentes_registrorutina_label_35: "React" { shape: "text" }
+componentes_registrorutina_label_35.class: label_bg
+componentes_registrorutina_label_36: "auth,\ndb" { shape: "text" }
+componentes_registrorutina_label_36.class: label_bg
+componentes_registrorutina_label_37: "doc,\nsetDoc" { shape: "text" }
+componentes_registrorutina_label_37.class: label_bg
+componentes_rutina_label_38: "React,\nuseState,\nuseEffect" { shape: "text" }
+componentes_rutina_label_38.class: label_bg
+componentes_rutina_label_39: "auth,\ndb" { shape: "text" }
+componentes_rutina_label_39.class: label_bg
+componentes_rutina_label_40: "collection,\ndoc,\ngetDocs,\nsetDoc,\ngetDoc,\ndeleteDoc" { shape: "text" }
+componentes_rutina_label_40.class: label_bg
+componentes_rutina_label_41: "CargaDatos,\nEstadoVacio" { shape: "text" }
+componentes_rutina_label_41.class: label_bg
+componentes_rutina_label_42: "React,\nuseState,\nuseEffect" { shape: "text" }
+componentes_rutina_label_42.class: label_bg
+componentes_rutina_label_43: "auth,\ndb" { shape: "text" }
+componentes_rutina_label_43.class: label_bg
+componentes_rutina_label_44: "collection,\ndoc,\nsetDoc,\ngetDocs" { shape: "text" }
+componentes_rutina_label_44.class: label_bg
+componentes_label_45: "React" { shape: "text" }
+componentes_label_45.class: label_bg
+componentes_label_46: "MenuLogin" { shape: "text" }
+componentes_label_46.class: label_bg
+componentes_label_47: "Login" { shape: "text" }
+componentes_label_47.class: label_bg
+componentes_label_48: "SignIn" { shape: "text" }
+componentes_label_48.class: label_bg
+componentes_label_49: "FormularioDatos" { shape: "text" }
+componentes_label_49.class: label_bg
+componentes_label_50: "MenuPrincipal" { shape: "text" }
+componentes_label_50.class: label_bg
+componentes_label_51: "MenuRutina" { shape: "text" }
+componentes_label_51.class: label_bg
+componentes_label_52: "RegistrarEjercicio" { shape: "text" }
+componentes_label_52.class: label_bg
+componentes_label_53: "RegistroRutina" { shape: "text" }
+componentes_label_53.class: label_bg
+componentes_label_54: "CalculoGrasa" { shape: "text" }
+componentes_label_54.class: label_bg
+componentes_label_55: "Historial" { shape: "text" }
+componentes_label_55.class: label_bg
+componentes_label_56: "GraficosProgreso" { shape: "text" }
+componentes_label_56.class: label_bg
+label_57: "useState,\nuseEffect" { shape: "text" }
+label_57.class: label_bg
+label_58: "ViewRenderer" { shape: "text" }
+label_58.class: label_bg
+label_59: "auth,\ndb" { shape: "text" }
+label_59.class: label_bg
+label_60: "doc,\ngetDoc" { shape: "text" }
+label_60.class: label_bg
+label_61: "_" { shape: "text" }
+label_61.class: label_bg
+label_62: "initializeApp" { shape: "text" }
+label_62.class: label_bg
+label_63: "getAuth" { shape: "text" }
+label_63.class: label_bg
+label_64: "getFirestore" { shape: "text" }
+label_64.class: label_bg
+label_65: "React" { shape: "text" }
+label_65.class: label_bg
+label_66: "ReactDOM" { shape: "text" }
+label_66.class: label_bg
+label_67: "App" { shape: "text" }
+label_67.class: label_bg
+label_68: "_" { shape: "text" }
+label_68.class: label_bg
+label_69: "_" { shape: "text" }
+label_69.class: label_bg
+label_70: "_" { shape: "text" }
+label_70.class: label_bg
+componentes_comunes_componentecarga_jsx -> componentes_comunes_label_0 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_comunes_label_0 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_graficos_graficosprogreso_jsx -> componentes_graficos_label_1 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_graficos_label_1 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_graficos_graficosprogreso_jsx -> componentes_graficos_label_2 { style: { stroke: "#808080" } }
+componentes_graficos_label_2 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_grasa_calculograsa_jsx -> componentes_grasa_label_6 { style: { stroke: "#808080" } }
+componentes_grasa_label_6 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_grasa_calculograsa_jsx -> componentes_grasa_label_5 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_grasa_label_5 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_historial_historial_jsx -> componentes_historial_label_9 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_historial_label_9 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_historial_historial_jsx -> componentes_historial_label_10 { style: { stroke: "#808080" } }
+componentes_historial_label_10 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_formulariodatos_jsx -> componentes_iniciodesesion_label_15 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_15 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_formulariodatos_jsx -> componentes_iniciodesesion_label_14 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_iniciodesesion_label_14 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_iniciodesesion_login_jsx -> componentes_iniciodesesion_label_18 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_iniciodesesion_label_18 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_iniciodesesion_login_jsx -> componentes_iniciodesesion_label_19 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_19 -> firebase/auth   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_signin_jsx -> componentes_iniciodesesion_label_23 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_23 -> firebase/auth   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_signin_jsx -> componentes_iniciodesesion_label_22 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_iniciodesesion_label_22 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_iniciodesesion_menulogin_jsx -> componentes_iniciodesesion_label_21 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_iniciodesesion_label_21 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_viewrenderer_jsx -> componentes_label_46 { style: { stroke: "#808080" } }
+componentes_label_46 -> componentes_iniciodesesion_menulogin_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_45 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_label_45 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_menuprincipal_menuprincipal_jsx -> componentes_menuprincipal_label_26 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_menuprincipal_label_26 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_viewrenderer_jsx -> componentes_label_50 { style: { stroke: "#808080" } }
+componentes_label_50 -> componentes_menuprincipal_menuprincipal_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_47 { style: { stroke: "#808080" } }
+componentes_label_47 -> componentes_iniciodesesion_login_jsx   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_login_jsx -> componentes_iniciodesesion_label_20 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_20 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_signin_jsx -> componentes_iniciodesesion_label_24 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_24 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_signin_jsx -> componentes_iniciodesesion_label_25 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_25 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_graficos_graficosprogreso_jsx -> componentes_graficos_label_3 { style: { stroke: "#808080" } }
+componentes_graficos_label_3 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_graficos_graficosprogreso_jsx -> componentes_graficos_label_4 { style: { stroke: "#808080" } }
+componentes_graficos_label_4 -> recharts   { style: { stroke: "#808080" } }
+componentes_historial_historial_jsx -> componentes_historial_label_12 { style: { stroke: "#808080" } }
+componentes_historial_label_12 -> recharts   { style: { stroke: "#808080" } }
+componentes_historial_historial_jsx -> componentes_historial_label_11 { style: { stroke: "#808080" } }
+componentes_historial_label_11 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_grasa_calculograsa_jsx -> componentes_grasa_label_7 { style: { stroke: "#808080" } }
+componentes_grasa_label_7 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_grasa_calculograsa_jsx -> componentes_grasa_label_8 { style: { stroke: "#808080" } }
+componentes_grasa_label_8 -> utils_fitnessutils_jsx   { style: { stroke: "#808080" } }
+componentes_historial_historial_jsx -> componentes_historial_label_13 { style: { stroke: "#808080" } }
+componentes_historial_label_13 -> utils_fitnessutils_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_55 { style: { stroke: "#808080" } }
+componentes_label_55 -> componentes_historial_historial_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_48 { style: { stroke: "#808080" } }
+componentes_label_48 -> componentes_iniciodesesion_signin_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_49 { style: { stroke: "#808080" } }
+componentes_label_49 -> componentes_iniciodesesion_formulariodatos_jsx   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_formulariodatos_jsx -> componentes_iniciodesesion_label_16 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_16 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_registrorutina_calculodinamicomejorado_jsx -> componentes_registrorutina_label_29 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_29 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_registrorutina_calculodinamicomejorado_jsx -> componentes_registrorutina_label_27 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_registrorutina_label_27 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_registrorutina_registrorutina_jsx -> componentes_registrorutina_label_30 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_registrorutina_label_30 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_registrorutina_registrorutina_jsx -> componentes_registrorutina_label_31 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_31 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_registrorutina_calculodinamicomejorado_jsx -> componentes_registrorutina_label_28 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_28 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_registrorutina_registrorutina_jsx -> componentes_registrorutina_label_33 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_33 -> componentes_registrorutina_calculodinamicomejorado_jsx   { style: { stroke: "#808080" } }
+componentes_registrorutina_registrorutina_jsx -> componentes_registrorutina_label_32 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_32 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_registrorutina_resumenentrenamiento_jsx -> componentes_registrorutina_label_37 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_37 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_registrorutina_registrorutina_jsx -> componentes_registrorutina_label_34 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_34 -> componentes_registrorutina_resumenentrenamiento_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_53 { style: { stroke: "#808080" } }
+componentes_label_53 -> componentes_registrorutina_registrorutina_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_51 { style: { stroke: "#808080" } }
+componentes_label_51 -> componentes_rutina_menurutina_jsx   { style: { stroke: "#808080" } }
+componentes_rutina_menurutina_jsx -> componentes_rutina_label_38 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_rutina_label_38 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_registrorutina_resumenentrenamiento_jsx -> componentes_registrorutina_label_35 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_registrorutina_label_35 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_registrorutina_resumenentrenamiento_jsx -> componentes_registrorutina_label_36 { style: { stroke: "#808080" } }
+componentes_registrorutina_label_36 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_rutina_menurutina_jsx -> componentes_rutina_label_39 { style: { stroke: "#808080" } }
+componentes_rutina_label_39 -> firebase-config_js   { style: { stroke: "#808080" } }
+componentes_rutina_menurutina_jsx -> componentes_rutina_label_40 { style: { stroke: "#808080" } }
+componentes_rutina_label_40 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_rutina_registrarejercicio_jsx -> componentes_rutina_label_44 { style: { stroke: "#808080" } }
+componentes_rutina_label_44 -> firebase/firestore   { style: { stroke: "#808080" } }
+componentes_rutina_registrarejercicio_jsx -> componentes_rutina_label_42 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+componentes_rutina_label_42 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+app_js -> label_57 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+label_57 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+app_js -> label_58 { style: { stroke: "#808080" } }
+label_58 -> componentes_viewrenderer_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_52 { style: { stroke: "#808080" } }
+componentes_label_52 -> componentes_rutina_registrarejercicio_jsx   { style: { stroke: "#808080" } }
+componentes_rutina_registrarejercicio_jsx -> componentes_rutina_label_43 { style: { stroke: "#808080" } }
+componentes_rutina_label_43 -> firebase-config_js   { style: { stroke: "#808080" } }
+app_js -> label_59 { style: { stroke: "#808080" } }
+label_59 -> firebase-config_js   { style: { stroke: "#808080" } }
+app_js -> label_60 { style: { stroke: "#808080" } }
+label_60 -> firebase/firestore   { style: { stroke: "#808080" } }
+firebase-config_js -> label_64 { style: { stroke: "#808080" } }
+label_64 -> firebase/firestore   { style: { stroke: "#808080" } }
+firebase-config_js -> label_62 { style: { stroke: "#808080" } }
+label_62 -> firebase/app   { style: { stroke: "#808080" } }
+firebase-config_js -> label_63 { style: { stroke: "#808080" } }
+label_63 -> firebase/auth   { style: { stroke: "#808080" } }
+app_js -> label_61 { style: { stroke: "#808080" } }
+label_61 -> global_css   { style: { stroke: "#808080" } }
+componentes_iniciodesesion_formulariodatos_jsx -> componentes_iniciodesesion_label_17 { style: { stroke: "#808080" } }
+componentes_iniciodesesion_label_17 -> global_css   { style: { stroke: "#808080" } }
+index_js -> label_70 { style: { stroke: "#808080" } }
+label_70 -> global_css   { style: { stroke: "#808080" } }
+index_js -> label_65 { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+label_65 -> react   { style: { stroke: "#61DAFB"
+    stroke-dash: 5 } }
+index_js -> label_66 { style: { stroke: "#808080" } }
+label_66 -> react-dom/client   { style: { stroke: "#808080" } }
+index_js -> label_67 { style: { stroke: "#808080" } }
+label_67 -> app_js   { style: { stroke: "#808080" } }
+index_js -> label_68 { style: { stroke: "#808080" } }
+label_68 -> bootstrap/dist/css/bootstrap.min.css   { style: { stroke: "#808080" } }
+index_js -> label_69 { style: { stroke: "#808080" } }
+label_69 -> index_css   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_54 { style: { stroke: "#808080" } }
+componentes_label_54 -> componentes_grasa_calculograsa_jsx   { style: { stroke: "#808080" } }
+componentes_viewrenderer_jsx -> componentes_label_56 { style: { stroke: "#808080" } }
+componentes_label_56 -> componentes_graficos_graficosprogreso_jsx   { style: { stroke: "#808080" } }
+componentes_rutina_menurutina_jsx -> componentes_rutina_label_41 { style: { stroke: "#808080" } }
+componentes_rutina_label_41 -> componentes_comunes_componentecarga_jsx   { style: { stroke: "#808080" } }

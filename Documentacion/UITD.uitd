@@ -1,152 +1,134 @@
 UITD "ControlFit" {
-    UI 1 "Menú Login" actions {
-        clicks "Inicio de Sesión";
-        clicks "Crear Cuenta ";
-        }
-
-
-    UI 2 "Login" actions {
-        clicks "Iniciar sesión";
+    UI 1 "MenuLogin" actions {
+        clicks "Iniciar Sesión";
         clicks "Crear Cuenta";
-        clicks "Regresar al Inicio";
     }
 
-    UI 3 "SignIn " actions {
-        clicks "Crear Cuenta";
-        clicks "Iniciar sesión";
-        clicks "Regresar al Inicio";
+    UI 2 "Login" actions {
+        clicks "Iniciar Sesión";
+        clicks "Registrarse";
+        clicks "Volver al menú";
+    }
+
+    UI 3 "SignIn" actions {
+        clicks "Registrarse";
+        clicks "Ya tengo cuenta";
+        clicks "Volver al menú";
     }
 
     UI 4 "FormularioDatos" actions {
-        clicks "Guardar Datos";
-        clicks "Regresar";
+  
+        clicks "Actualizar datos";
+        clicks "Cancelar";
     }
 
-    UI 5 "MenúPrincipal" actions {
-        clicks "Gestión Rutinas";
-        clicks "Registrar Entrenamiento";
-        clicks "Porcentaje de Grasa";
-        clicks "Historial de Progreso";
-        clicks "Graficos de Progreso"; 
+    UI 5 "MenuPrincipal" actions {
+        clicks "Gestionar Rutinas";
+        clicks "Entrenar";
+        clicks "% de Grasa Corporal";
+        clicks "Historial";
         clicks "Actualizar Datos";
-
+        clicks "Salir";
     }
     
-    UI 6 "GestiónRutinas" actions{
-        clicks "Nueva Rutina"; 
-        clicks "Registrar Ejercicio";
-        clicks "Registrar Ejercicio/No hay ningun ejercicio registrado";
-        clicks "Eliminar Rutina";
-        clicks "Regresar al Menú";
-        clicks "Eliminar";
+    UI 6 "MenuRutina" actions {
 
+        clicks "Registrar Ejercicio";
+        
     }
 
-    UI 7 "Registro Entrenamiento " actions {
-        clicks "Elegir rutina";
-        clicks "Registrar Ejercicio";
-        clicks "Limpiar Formulario";
+    UI 7 "RegistrarEjercicio" actions {
+
         clicks "Regresar";
     }
 
-    UI 8 "Porcentaje de Grasa " actions {
-        clicks "Ver Historial";
-        clicks "Actualizar Datos";
-        clicks "Regresar";
-    }
+    UI 8 "RegistroRutina" actions {
 
-    UI 9 "Historial de progreso" actions {
-        clicks "Porcentaje de Grasa/Estas en IU 13";
-        clicks "Medidas corporales/Estas en IU12";
-        clicks "Regresar al Menú";
-        clicks "Calcular Grasa Actual";
-    }
-
-    UI 10 "Graficos de progreso" actions{
-        clicks "Registrar Entrenamiento";
-        clicks "Ver Historial";
-        clicks "Regresar al Menú";
-    }
+        clicks "Gestionar Rutinas";
+        clicks "Finalizar y Guardar";
+        clicks "Entrenar de Nuevo";
     
-    UI 11 "Registrar Ejercicio" actions{
-
-        clicks "Registrar Set";
-        clicks "Saltarse Set";
     }
 
-    UI 12 "HP Porcentaje de Grasa" actions {
-
+    UI 9 "CalculoGrasa" actions {
+        clicks " Ver Historial Completo";
+        clicks " Ver Gráficos de Progreso";
+        clicks " Actualizar Medidas";
+      
     }
-    
-     UI 13 "HP Medidas Corporales" actions {
+
+    UI 10 "Historial" actions {
+        clicks " Calcular Grasa";
+        clicks " Agregar Medición";
+        clicks " Entrenar";
+       
     }
 
-    UI 14 "Navegar a Historial" actions {
-      clicks "Ver Historial";
+    UI 11 "GraficosProgreso" actions {
+        clicks " Ver Historial";
+        clicks " Entrenar";
+        clicks " Nueva Medición";
+       
     }
 
 
     FRAGMENT "Inicio sesión" {
         DRAW {
-        1,2(1),3(1),4,5
-    };
+            1,2(1),3(1),4,5
+        };
 
-    TRANSITION from 1 to 2 if user clicks "Inicio de Sesión";
-    TRANSITION from 1 to 3 if user clicks "Crear Cuenta ";
+        TRANSITION from 1 to 2 if user clicks "Iniciar Sesión";
+        TRANSITION from 1 to 3 if user clicks "Crear Cuenta";
 
-    TRANSITION from 2 to 4 if user clicks "Iniciar sesión" AND "No cuenta con un registro corporal";
-    TRANSITION from 2 to 5 if user clicks "Iniciar sesión" AND "Ya cuenta con un registro corporal";
+        TRANSITION from 2 to 4 if user clicks "Iniciar Sesión" AND "Usuario sin datos completos";
+        TRANSITION from 2 to 5 if user clicks "Iniciar Sesión" AND "Usuario con datos completos";
+        TRANSITION from 2 to 3 if user clicks "Registrarse";
+        TRANSITION from 2 to 1 if user clicks "Volver al menú";
 
-    TRANSITION from 3 to 4 if user clicks "Crear Cuenta";   
+        TRANSITION from 3 to 4 if user clicks "Registrarse" AND "Registro exitoso";
+        TRANSITION from 3 to 2 if user clicks "Ya tengo cuenta";
+        TRANSITION from 3 to 1 if user clicks "Volver al menú";
 
+        TRANSITION from 4 to 5 if user clicks "Actualizar datos";
     }
 
     FRAGMENT "Aplicación funcional" {
         DRAW {
-            4, 14, 5(14),6,7,8(14),10(14),11,9(12),9(13)
-    };
+            5(1),6(5),7(6),8(5),9(5),10(5),11(5),4(5)
+        };
 
-    TRANSITION from 4 to 5 if user clicks "Guardar Datos";
-    TRANSITION from 4 to 5 if user clicks "Regresar";
+        TRANSITION from 5 to 6 if user clicks "Gestionar Rutinas";
+        TRANSITION from 5 to 8 if user clicks "Entrenar";
+        TRANSITION from 5 to 9 if user clicks "% de Grasa Corporal";
+        TRANSITION from 5 to 10 if user clicks "Historial";
+        TRANSITION from 5 to 4 if user clicks "Actualizar Datos";
+        TRANSITION from 5 to 1 if user clicks "Salir";
 
-    TRANSITION from 5 to 6 if user clicks "Gestión Rutinas";
-    TRANSITION from 5 to 7 if user clicks "Registrar Entrenamiento";
-    TRANSITION from 5 to 8 if user clicks "Porcentaje de Grasa";
-    TRANSITION from 5 to 10 if user clicks "Graficos de Progreso";
-    TRANSITION from 5 to 11 if user clicks "Actualizar Datos";
+        TRANSITION from 6 to 7 if user clicks "Registrar Ejercicio";
+       
 
-    TRANSITION from 6 to 6 if user clicks "Nueva Rutina";
-    TRANSITION from 6 to 6 if user clicks "Eliminar";
-    TRANSITION from 6 to 6 if user clicks "Registrar Ejercicio";
-    TRANSITION from 6 to 6 if user clicks "Registrar Ejercicio/No hay ningun ejercicio registrado";
-    TRANSITION from 6 to 6 if user clicks "Eliminar Rutina";
-    TRANSITION from 6 to 5 if user clicks "Regresar al Menú";
+        TRANSITION from 7 to 6 if user clicks "Regresar";
 
-    TRANSITION from 7 to 11 if user clicks "Elegir rutina";
-    TRANSITION from 7 to 7 if user clicks "Registrar Ejercicio";
-    TRANSITION from 7 to 7 if user clicks "Limpiar Formulario";
-    TRANSITION from 7 to 5 if user clicks "Regresar";
+        TRANSITION from 8 to 6 if user clicks "Gestionar Rutinas";
+        TRANSITION from 8 to 8 if user clicks "Entrenar de Nuevo";
+        TRANSITION from 8 to 5 if user clicks "Finalizar y Guardar";
 
-    TRANSITION from 14 to 9 if user clicks "Ver Historial";
-    TRANSITION from 8 to 4 if user clicks "Actualizar Datos";
-    TRANSITION from 8 to 5 if user clicks "Regresar";
+        TRANSITION from 9 to 10 if user clicks " Ver Historial Completo";
+        TRANSITION from 9 to 11 if user clicks " Ver Gráficos de Progreso";
+        TRANSITION from 9 to 4 if user clicks " Actualizar Medidas";
+        
 
-    TRANSITION from 9 to 9 if user clicks "Porcentaje de Grasa/Estas en IU 13";
-    TRANSITION from 9 to 9 if user clicks  "Medidas corporales/Estas en IU12";
-    TRANSITION from 9 to 5 if user clicks "Regresar al Menú";
-    TRANSITION from 9 to 8 if user clicks "Calcular Grasa Actual";
+        TRANSITION from 10 to 9 if user clicks " Calcular Grasa";
+        TRANSITION from 10 to 4 if user clicks " Agregar Medición";
+        TRANSITION from 10 to 8 if user clicks " Entrenar";
+       
 
-    TRANSITION from 10 to 6 if user clicks "Registrar Entrenamiento";
-    TRANSITION from 10 to 5 if user clicks "Regresar al Menú";
+        TRANSITION from 11 to 10 if user clicks " Ver Historial";
+        TRANSITION from 11 to 8 if user clicks " Entrenar";
+        TRANSITION from 11 to 4 if user clicks " Nueva Medición";
+       
 
-    TRANSITION from 11 to 11 if user clicks "Registrar Set";
-    TRANSITION from 11 to 5 if user clicks "Registrar Set" AND "Es el último" ;
-    TRANSITION from 11 to 11 if user clicks "Saltarse Set";
-    TRANSITION from 11 to 5 if user clicks "Saltarse Set" AND "Es el último";
-
+        TRANSITION from 4 to 5 if user clicks  "Cancelar";
     }
-
-
-
 
 }

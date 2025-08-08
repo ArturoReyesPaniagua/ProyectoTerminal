@@ -1,17 +1,18 @@
-title Registrar Nuevo Ejercicio - Flujo Completo
+title IU5 Registrar Nuevo Ejercicio 
 
 actor Usuario
 
 participant MenuRutina
+participant App.js
+
 participant ViewRenderer
 participant RegistrarEjercicio
 participant React
 participant Firestore
 
-MenuRutina->ViewRenderer:setCurrentView("registrarEjercicio")
-ViewRenderer->RegistrarEjercicio:<RegistrarEjercicio setCurrentView={setCurrentView} />
 
-note over RegistrarEjercicio: Inicialización de estados
+App.js -> ViewRenderer: <ViewRenderer currentView={"RegistrarEjercicio"} \n setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>\nViewRenderer.jsx->Login.jsx:<login {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />\n
+
 
 RegistrarEjercicio->React:useState("")
 React-->RegistrarEjercicio:[nombre, setNombre]
@@ -70,26 +71,18 @@ Usuario->RegistrarEjercicio:Ingresa sets "4"
 RegistrarEjercicio->React:setSetsMaximos("4")
 React-->RegistrarEjercicio:return
 
-note over RegistrarEjercicio: Muestra info calculada:\n- Volumen: 3200 kg×reps×sets\n- Categoría: Empuje Superior\n- 1RM: 92kg
 
 Usuario->RegistrarEjercicio:Click "Registrar Ejercicio"
-RegistrarEjercicio->RegistrarEjercicio:registrarEjercicio()
 
-RegistrarEjercicio->RegistrarEjercicio:validarDatos()
-note right of RegistrarEjercicio: Validaciones:\n- Nombre >= 3 chars\n- No duplicado\n- Músculo seleccionado\n- Peso > 0 y <= 500\n- Reps > 0 y <= 50\n- Sets > 0 y <= 20
 
 alt Validación exitosa
     RegistrarEjercicio->React:setLoading(true)
     React-->RegistrarEjercicio:return
     
-    RegistrarEjercicio->Firestore:setDoc(\n  doc(collection(db, "ejercicios")),\n  {\n    nombre: "Press de Banca",\n    musculo: "Pecho",\n    pesoMaximo: 80,\n    repeticionesMaximas: 10,\n    setsMaximos: 4,\n    volumenBase: 3200,\n    categoria: "Empuje Superior",\n    activo: true,\n    fechaCreacion: new Date().toISOString()\n  }\n)
-    Firestore-->RegistrarEjercicio:success
     
     RegistrarEjercicio-->Usuario:Alert "¡Ejercicio registrado con éxito!"
     
-    RegistrarEjercicio->RegistrarEjercicio:cargarEjerciciosExistentes()
     
-    RegistrarEjercicio->RegistrarEjercicio:confirm("¿Registrar otro?")
     RegistrarEjercicio-->Usuario:Muestra confirmación
     
     alt Usuario cancela
@@ -106,8 +99,6 @@ ViewRenderer<--React:return
 
     end
     
-else Validación fallida
-    RegistrarEjercicio-->Usuario:Alert con errores:\n- "Nombre debe tener 3+ chars"\n- "Ya existe este ejercicio"\n
 end
 
 

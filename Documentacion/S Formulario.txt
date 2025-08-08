@@ -1,4 +1,4 @@
-title IU-FormularioDatos (Formulario de Datos Iniciales o Actualización)
+title IU-FormularioDatos 
 
 actor Usuario
 participant index.js
@@ -11,15 +11,17 @@ participant Firestore
 
 == Renderizado de la vista ==
 
-App.js -> ViewRenderer.jsx: <ViewRenderer currentView={"formularioDatos"} ... />
+App.js -> ViewRenderer.jsx: <ViewRenderer currentView={"formularioDatos"} \n setCurrentView={setCurrentView}\n  currentUser={currentUser}\n  handleSignOut={handleSignOut}\n  error={error}\n  setError={setError}\n/>\nViewRenderer.jsx->Login.jsx:<login {\n    setCurrentView,\n    currentUser,\n    handleSignOut,\n    error,\n    setError,\n  } />\n
 ViewRenderer.jsx -> FormularioDatos.jsx: render()
 
 FormularioDatos.jsx -> react: useEffect()
-react -> Firestore: getDoc("usuarios/{uid}") -->> FormularioDatos.jsx
+react -> Firestore: getDoc("usuarios/{uid}") 
 alt Si existe userDoc
     FormularioDatos.jsx -> react: setFormData(data)
+FormularioDatos.jsx<--react:return
 else
     FormularioDatos.jsx -> react: setFormData(defaultValues)
+FormularioDatos.jsx<--react:return
 end
 
 == Interacción del usuario ==
@@ -39,8 +41,7 @@ FormularioDatos.jsx -> react: handleSubmit()
 FormularioDatos.jsx<--react:return
 == Validación del formulario ==
 
-FormularioDatos.jsx -> react: validateForm()
-FormularioDatos.jsx<--react:return
+    
 alt Campos requeridos incompletos
     FormularioDatos.jsx -> react: setError("Faltan campos")
 FormularioDatos.jsx<--react:return
@@ -65,7 +66,7 @@ alt Usuario autenticado
     FormularioDatos.jsx ->> Firestore: setDoc("usuarios/{uid}", data, { merge: true })
     FormularioDatos.jsx<--react:return
     alt Primera vez
-        FormularioDatos.jsx --> Usuario: ✅ Datos establecidos con éxito
+        FormularioDatos.jsx --> Usuario:  Datos establecidos con éxito
     else Actualización
         FormularioDatos.jsx ->> Firestore: addDoc("usuarios/{uid}/historial", datosActualizados)
         FormularioDatos.jsx --> Usuario:  Datos actualizados con éxito
@@ -83,3 +84,4 @@ end
 
 Usuario -> FormularioDatos.jsx: Clic en "Cancelar"
 FormularioDatos.jsx -> react: setCurrentView("menuPrincipal")
+== ir a index inicia==

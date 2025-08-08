@@ -106,7 +106,5 @@ else currentView == "grasa"
 else currentView == "historial"
     == ir a IU 9 ==
 
-else currentView == "graficos"
-    == ir a IU 10 ==
 
 end

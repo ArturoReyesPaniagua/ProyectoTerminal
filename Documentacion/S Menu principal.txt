@@ -1,9 +1,5 @@
-@startuml
 
-' Diagrama de secuencia maestro -
-
-title IU 5 MenuPrincipal - Navegación hacia todas las vistas de la app
-
+title IU 5 MenuPrincipal
 actor Usuario
 participant index.js
 participant App.js
@@ -15,30 +11,37 @@ participant react
 App.js -> ViewRenderer.jsx: <ViewRenderer currentView={"menuPrincipal"} />
 ViewRenderer.jsx -> MenuPrincipal.jsx: <MenuPrincipal setCurrentView={setCurrentView} />
 
+ViewRenderer.jsx<--MenuPrincipal.jsx:return
+Usuario<--ViewRenderer.jsx:Muestra IU 5 MenuPrincipal
 Usuario -> MenuPrincipal.jsx: Selecciona opción del menú
 
 alt Gestionar Rutinas
     MenuPrincipal.jsx -> react: setCurrentView("menuRutina")
-    Usuario <-- MenuPrincipal.jsx: Navega a IU 6
+ViewRenderer.jsx<--react:return
+    Usuario <-- ViewRenderer.jsx: Navega a IU 6
 else Entrenar
     MenuPrincipal.jsx -> react: setCurrentView("registrarRutina")
-    Usuario <-- MenuPrincipal.jsx: Navega a IU 7
+    ViewRenderer.jsx<--react:return
+    Usuario <-- ViewRenderer.jsx: Navega a IU 7
 else Calcular Grasa
     MenuPrincipal.jsx -> react: setCurrentView("grasa")
-    Usuario <-- MenuPrincipal.jsx: Navega a IU 8
+    ViewRenderer.jsx<--react:return
+    Usuario <-- ViewRenderer.jsx: Navega a IU 8
 else Ver Historial
     MenuPrincipal.jsx -> react: setCurrentView("historial")
-    Usuario <-- MenuPrincipal.jsx: Navega a IU 9
+    ViewRenderer.jsx<--react:return
+    Usuario <-- ViewRenderer.jsx: Navega a IU 9
 else Actualizar Datos
     MenuPrincipal.jsx -> react: setCurrentView("actualizarDatos")
-    Usuario <-- MenuPrincipal.jsx: Navega a IU 4 (FormularioDatos modo update)
+    ViewRenderer.jsx<--react:return
+    Usuario <-- ViewRenderer.jsx: Navega a IU 4 (FormularioDatos modo update)
 end
 
 == Cierre de sesión ==
 Usuario -> MenuPrincipal.jsx: Clic en botón "Salir"
 MenuPrincipal.jsx -> App.js: handleSignOut()
 App.js -> react: setCurrentUser(null)
+App.js<--react:return
 App.js -> react: setCurrentView("menu")
-Usuario <-- App.js: Navega a IU 1 (MenuLogin)
-
-@enduml
+App.js<--react:return
+==ir index inicia==

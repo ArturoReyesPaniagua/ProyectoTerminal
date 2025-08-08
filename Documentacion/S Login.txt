@@ -23,14 +23,14 @@ App.js-->index.js:JSX
 Usuario<--index.js:Ve formulario de login
 
 alt Usuario ingresa email
-    Usuario->Login.jsx:onChange en campo email
+    Usuario->Login.jsx:Teclea su email
     Login.jsx->react:setFormData(prev => ({...prev, email: value}))
     react-->Login.jsx:actualizar estado formData
     Usuario<--Login.jsx:Campo actualizado
 end
 
 alt Usuario ingresa password
-    Usuario->Login.jsx:onChange campo password
+    Usuario->Login.jsx:Teclea su password\n
     Login.jsx->react:setFormData(prev => ({...prev, password: value}))
     react-->Login.jsx:actualizar estado formData
     Usuario<--Login.jsx:Campo actualizado
@@ -38,8 +38,6 @@ end
 
 alt Usuario hace click en "Iniciar Sesión"
     Usuario->Login.jsx:onClick botón "Iniciar Sesión"
-    Login.jsx->Login.jsx:handleLogin()
-    Login.jsx->Login.jsx:validateForm()
     
     alt validación exitosa
         Login.jsx->react:setLoading(true)
@@ -78,6 +76,7 @@ alt Usuario hace click en "Iniciar Sesión"
         Login.jsx->react:setError(mensaje)
         react-->Login.jsx:Return
         Usuario<--Login.jsx:Ve error de validación
+         ==Ir a inicio de Login IU2==
     end
     
 else Usuario hace click en "Registrarse"

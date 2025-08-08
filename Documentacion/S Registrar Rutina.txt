@@ -1,4 +1,4 @@
-title IU-RegistroRutina
+title IU 8-RegistroRutina
 
 actor Usuario
 participant index.js
@@ -11,27 +11,39 @@ participant react
 participant Firebase Auth
 participant Firestore
 
-== Renderizado Inicial ==
+
 
 App.js -> ViewRenderer.jsx: <ViewRenderer currentView={"registrarRutina"} ... />
 ViewRenderer.jsx -> RegistroRutina.jsx: render()
 
+RegistroRutina.jsx->react:useState()\n
+RegistroRutina.jsx<--react:CurrentStepSet, CurrentStep
+RegistroRutina.jsx->react:useState()\n
+RegistroRutina.jsx<--react: rutinas, setRutinas
+RegistroRutina.jsx->react:useState()\n
+RegistroRutina.jsx<--react:RutinaSeleccionada, setRutinaSeleccionada
+RegistroRutina.jsx->react:useState()\n
+RegistroRutina.jsx<--react:EjerciciosRealizados, setEjerciciosRealizados
+RegistroRutina.jsx->react:useState()\n
+RegistroRutina.jsx<--react:CurrentStepSet, CurrentStep
 RegistroRutina.jsx -> react: useEffect()
-react -> Firebase Auth: auth.currentUser
+RegistroRutina.jsx<--react:obtenerRutinas
+RegistroRutina.jsx -> Firebase Auth: auth.currentUser
+RegistroRutina.jsx<-Firebase Auth:current user
 RegistroRutina.jsx<--Firebase Auth:return
 alt Usuario autenticado
     RegistroRutina.jsx ->> Firestore: getDocs("usuarios/{uid}/rutinas")
     Firestore -->> RegistroRutina.jsx: rutinasSnapshot
     RegistroRutina.jsx -> react: setRutinas(rutinasValidas)
-App.js<--react:return
+RegistroRutina.jsx<--react:return
 else
     RegistroRutina.jsx -> react: setError("Usuario no autenticado")
-    App.js<--react:return
+    RegistroRutina.jsx<--react:return
 end
 
 == Paso 1: Selección de Rutina ==
 
-Usuario -> RegistroRutina.jsx: click sobre tarjeta de rutina
+Usuario -> RegistroRutina.jsx: click sobre rutina
 RegistroRutina.jsx -> react: handleRutinaSeleccionada(id)
 RegistroRutina.jsx<--react:return
 RegistroRutina.jsx -> Firebase Auth: auth.currentUser
@@ -52,17 +64,17 @@ RegistroRutina.jsx<--react:return
 RegistroRutina.jsx<-react:return
         RegistroRutina.jsx -> react: setCurrentStep(2)
 RegistroRutina.jsx<-react:return
-    else
+    else No hay ejericicos en la rutina
         RegistroRutina.jsx --> Usuario: alerta: "Ejercicios no disponibles"
         == ir a paso 1==
     end
-else
+else Usuario no autentificado
     RegistroRutina.jsx --> Usuario: alerta "No autenticado"
 end
 
 == Paso 2: Ejecución de rutina ==
 
-RegistroRutina.jsx -> CalculoDinamicoMejorado.jsx: render(rutinaSeleccionada)
+RegistroRutina.jsx -> CalculoDinamicoMejorado.jsx: cargar(rutinaSeleccionada)
 
 RegistroRutina.jsx<--CalculoDinamicoMejorado.jsx:return
 Usuario<-RegistroRutina.jsx:Muestra formulario con set, peso
@@ -74,6 +86,7 @@ CalculoDinamicoMejorado.jsx<-react:return
   else no hay mas ejercicios 
     Usuario -> CalculoDinamicoMejorado.jsx: click "Finalizar rutina"
     CalculoDinamicoMejorado.jsx -> react: setCurrentStep(3)
+CalculoDinamicoMejorado.jsx<--react:return
   end
 == Paso 3: Mostrar Resumen ==
 
@@ -108,3 +121,4 @@ end
 
 Usuario -> RegistroRutina.jsx: click "Regresar"
 RegistroRutina.jsx -> react: setCurrentView("menuPrincipal")
+

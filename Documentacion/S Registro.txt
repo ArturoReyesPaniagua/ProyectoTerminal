@@ -1,3 +1,4 @@
+
 title IU 3 SignIn 
 
 actor Usuario
@@ -45,8 +46,6 @@ end
 
 alt Usuario hace click en "Registrarse"
     Usuario->SignIn.jsx:onClick botón "Registrarse"
-    SignIn.jsx->SignIn.jsx:handleRegister()
-    SignIn.jsx->SignIn.jsx:validateForm()
 
     alt validación exitosa
         SignIn.jsx->react:setLoading(true)
@@ -54,10 +53,10 @@ alt Usuario hace click en "Registrarse"
         SignIn.jsx->react:setError(null)
         react-->SignIn.jsx:return
 
-        SignIn.jsx->>Firebase Auth:createUserWithEmailAndPassword(auth, email, password)
+        SignIn.jsx->>Firebase Auth:createUserWithEmailAndPassword(auth,         email, password)
         Firebase Auth-->>SignIn.jsx:userCredential
 
-        SignIn.jsx->>Firestore:setDoc("usuarios/{uid}", { email, datosCompletos: false, fechaRegistro })
+        SignIn.jsx->>Firestore:setDoc("usuarios/{uid}", { email,                datosCompletos: false, fechaRegistro })
         Firestore-->>SignIn.jsx:Documento creado
 
         SignIn.jsx->react:setCurrentView("formularioDatos")
@@ -68,24 +67,24 @@ alt Usuario hace click en "Registrarse"
         SignIn.jsx->react:setError(mensaje)
         react-->SignIn.jsx:return
         Usuario<--SignIn.jsx:Ve mensaje de error de validación
-    end
+    
 
     else error de Firebase
         Firebase Auth-->>SignIn.jsx:error
         SignIn.jsx->react:setError(errorMessage)
-SignIn.jsx<--react:return
+        SignIn.jsx<--react:return
         SignIn.jsx->react:setLoading(false)
-SignIn.jsx<-react:return
+        SignIn.jsx<-react:return
         Usuario<--SignIn.jsx:Ve mensaje de error de Firebase
     end
 
 else Usuario hace click en "Ya tengo cuenta"
-    Usuario->SignIn.jsx:onClick botón
+    Usuario->SignIn.jsx:click en botón de inicio de sesión
     SignIn.jsx->react:setCurrentView("login")
     ==Ir a index inicia==
     
 else Usuario hace click en "Volver al menú"
-    Usuario->SignIn.jsx:onClick botón
+    Usuario->SignIn.jsx:click en botón de Menú
     SignIn.jsx->react:setCurrentView("menu")
     ==Ir a index inicia==
 end
